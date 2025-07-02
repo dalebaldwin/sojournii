@@ -1,0 +1,18 @@
+{
+  "project": {
+    "name": "sojournii"
+  },
+  "functions": {
+    "codegen": {
+      "enabled": true
+    }
+  },
+  "auth": {
+    "providers": [
+      {
+        "domain": "clerk",
+        "applicationID": "clerk"
+      }
+    ]
+  }
+} 
