@@ -1,8 +1,8 @@
 export default {
   providers: [
     {
-      domain: 'clerk',
-      applicationID: 'clerk',
+      domain: 'https://new-werewolf-51.clerk.accounts.dev',
+      applicationID: 'convex',
     },
   ],
   getUserMetadata: async (

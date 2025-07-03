@@ -1,4 +1,6 @@
+import ConvexClientProvider from '@/components/providers/convex-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ClerkProvider } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Funnel_Display, Funnel_Sans, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
@@ -36,7 +38,11 @@ export default function RootLayout({
       <body
         className={`${funnelSans.variable} ${funnelDisplay.variable} ${ibmMono.variable} antialiased`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ClerkProvider>
+          <ConvexClientProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   )

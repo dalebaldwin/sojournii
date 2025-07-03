@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useConvexAuth } from 'convex/react'
+import { useConvexAuth, useMutation, useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 
 // Query key factory for account settings
 const accountSettingsKeys = {
@@ -13,125 +13,43 @@ const accountSettingsKeys = {
 export function useAccountSettings() {
   const { isAuthenticated } = useConvexAuth()
 
-  return useQuery({
-    queryKey: accountSettingsKeys.current(),
-    queryFn: async () => {
-      // This would be called by your API layer
-      // For now, we'll return null as Convex handles the query
-      return null
-    },
-    enabled: isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-  })
+  return useQuery(
+    api.accountSettings.getAccountSettings,
+    isAuthenticated ? undefined : 'skip'
+  )
 }
 
 // Hook to check if user has completed onboarding
 export function useOnboardingStatus() {
   const { isAuthenticated } = useConvexAuth()
 
-  return useQuery({
-    queryKey: accountSettingsKeys.onboarding(),
-    queryFn: async () => {
-      // This would be called by your API layer
-      return false
-    },
-    enabled: isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
+  return useQuery(
+    api.accountSettings.hasCompletedOnboarding,
+    isAuthenticated ? undefined : 'skip'
+  )
 }
 
 // Hook to get reminder preferences
 export function useReminderPreferences() {
   const { isAuthenticated } = useConvexAuth()
 
-  return useQuery({
-    queryKey: accountSettingsKeys.reminders(),
-    queryFn: async () => {
-      // This would be called by your API layer
-      return null
-    },
-    enabled: isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
+  return useQuery(
+    api.accountSettings.getAccountSettings,
+    isAuthenticated ? undefined : 'skip'
+  )
 }
 
 // Hook to create account settings
 export function useCreateAccountSettings() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (_data: {
-      email: string
-      onboarding_completed: boolean
-      weekly_reminder: boolean
-      weekly_reminder_hour: number
-      weekly_reminder_minute: number
-      weekly_reminder_day:
-        | 'monday'
-        | 'tuesday'
-        | 'wednesday'
-        | 'thursday'
-        | 'friday'
-        | 'saturday'
-        | 'sunday'
-      weekly_reminder_time_zone: string
-    }) => {
-      // This would be called by your API layer
-      // For now, we'll return a mock ID
-      return 'mock-id'
-    },
-    onSuccess: () => {
-      // Invalidate and refetch account settings
-      queryClient.invalidateQueries({ queryKey: accountSettingsKeys.all })
-    },
-  })
+  return useMutation(api.accountSettings.createAccountSettings)
 }
 
 // Hook to update account settings
 export function useUpdateAccountSettings() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (data: {
-      id: string
-      email?: string
-      onboarding_completed?: boolean
-      weekly_reminder?: boolean
-      weekly_reminder_hour?: number
-      weekly_reminder_minute?: number
-      weekly_reminder_day?:
-        | 'monday'
-        | 'tuesday'
-        | 'wednesday'
-        | 'thursday'
-        | 'friday'
-        | 'saturday'
-        | 'sunday'
-      weekly_reminder_time_zone?: string
-    }) => {
-      // This would be called by your API layer
-      return data.id
-    },
-    onSuccess: () => {
-      // Invalidate and refetch account settings
-      queryClient.invalidateQueries({ queryKey: accountSettingsKeys.all })
-    },
-  })
+  return useMutation(api.accountSettings.updateAccountSettings)
 }
 
 // Hook to delete account settings
 export function useDeleteAccountSettings() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (_id: string) => {
-      // This would be called by your API layer
-      return true
-    },
-    onSuccess: () => {
-      // Invalidate and refetch account settings
-      queryClient.invalidateQueries({ queryKey: accountSettingsKeys.all })
-    },
-  })
+  return useMutation(api.accountSettings.deleteAccountSettings)
 }

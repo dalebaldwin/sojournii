@@ -1,4 +1,6 @@
+import { Heading } from '@/components/ui/heading'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+import Link from 'next/link'
 
 export default function HomePage() {
   return (
@@ -10,9 +12,13 @@ export default function HomePage() {
         </div>
 
         {/* Main heading with Funnel Display */}
-        <h1 className='font-display text-foreground text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl'>
+        <Heading
+          level='h1'
+          weight='bold'
+          className='tracking-tight sm:text-5xl lg:text-6xl'
+        >
           Welcome to Sojournii
-        </h1>
+        </Heading>
 
         {/* Subheading with Funnel Sans */}
         <p className='text-muted-foreground mt-6 font-sans text-xl'>
@@ -30,9 +36,9 @@ export default function HomePage() {
 
         {/* Code example with IBM Plex Mono */}
         <div className='mt-8'>
-          <h2 className='font-display text-foreground mb-4 text-2xl font-semibold'>
+          <Heading level='h2' weight='bold' className='mb-4'>
             Code Example
-          </h2>
+          </Heading>
           <div className='bg-card rounded-lg border p-6'>
             <pre className='overflow-x-auto font-mono text-sm text-green-400'>
               <code>{`// This is IBM Plex Mono
@@ -46,52 +52,52 @@ function welcome() {
 
         {/* Navigation to protected area */}
         <div className='mt-12 text-center'>
-          <h2 className='font-display text-foreground mb-4 text-2xl font-semibold'>
+          <Heading level='h2' weight='bold' className='mb-4'>
             Ready to get started?
-          </h2>
+          </Heading>
           <p className='text-muted-foreground mb-6 font-sans'>
             Sign in to access your personal dashboard and protected content.
           </p>
           <div className='flex justify-center gap-4'>
-            <a
+            <Link
               href='/sign-in'
               className='bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center rounded-md border border-transparent px-6 py-3 text-base font-medium transition-colors'
             >
               Sign In
-            </a>
-            <a
+            </Link>
+            <Link
               href='/sign-up'
               className='border-border bg-card text-card-foreground hover:bg-accent inline-flex items-center rounded-md border px-6 py-3 text-base font-medium transition-colors'
             >
               Sign Up
-            </a>
+            </Link>
           </div>
         </div>
 
         {/* Font showcase */}
         <div className='mt-12 grid grid-cols-1 gap-8 md:grid-cols-3'>
           <div className='bg-card rounded-lg border p-6 shadow-sm'>
-            <h3 className='font-display text-foreground mb-2 text-lg font-semibold'>
+            <Heading level='h3' weight='bold' className='mb-2'>
               Funnel Display
-            </h3>
+            </Heading>
             <p className='font-display text-muted-foreground text-sm'>
               Perfect for headings and titles
             </p>
           </div>
 
           <div className='bg-card rounded-lg border p-6 shadow-sm'>
-            <h3 className='font-display text-foreground mb-2 text-lg font-semibold'>
+            <Heading level='h3' weight='bold' className='mb-2'>
               Funnel Sans
-            </h3>
+            </Heading>
             <p className='text-muted-foreground font-sans text-sm'>
               Ideal for body text and UI elements
             </p>
           </div>
 
           <div className='bg-card rounded-lg border p-6 shadow-sm'>
-            <h3 className='font-display text-foreground mb-2 text-lg font-semibold'>
+            <Heading level='h3' weight='bold' className='mb-2'>
               IBM Plex Mono
-            </h3>
+            </Heading>
             <p className='text-muted-foreground font-mono text-sm'>
               Great for code and technical content
             </p>

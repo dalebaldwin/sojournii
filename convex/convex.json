@@ -6,13 +6,5 @@
     "codegen": {
       "enabled": true
     }
-  },
-  "auth": {
-    "providers": [
-      {
-        "domain": "clerk",
-        "applicationID": "clerk"
-      }
-    ]
   }
 } 

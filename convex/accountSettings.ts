@@ -23,7 +23,8 @@ export const getAccountSettings = query({
 // Mutation to create account settings
 export const createAccountSettings = mutation({
   args: {
-    email: v.string(),
+    clerk_email: v.string(),
+    notifications_email: v.string(),
     onboarding_completed: v.boolean(),
     weekly_reminder: v.boolean(),
     weekly_reminder_hour: v.number(),
@@ -57,7 +58,8 @@ export const createAccountSettings = mutation({
     // RLS: Create settings with the authenticated user's ID
     const settingsId = await ctx.db.insert('account_settings', {
       user_id: userId,
-      email: args.email,
+      clerk_email: args.clerk_email,
+      notifications_email: args.notifications_email,
       tokenIdentifier: userId, // Use userId as tokenIdentifier for RLS
       onboarding_completed: args.onboarding_completed,
       weekly_reminder: args.weekly_reminder,
@@ -77,7 +79,8 @@ export const createAccountSettings = mutation({
 export const updateAccountSettings = mutation({
   args: {
     id: v.id('account_settings'),
-    email: v.optional(v.string()),
+    clerk_email: v.optional(v.string()),
+    notifications_email: v.optional(v.string()),
     onboarding_completed: v.optional(v.boolean()),
     weekly_reminder: v.optional(v.boolean()),
     weekly_reminder_hour: v.optional(v.number()),
@@ -112,7 +115,8 @@ export const updateAccountSettings = mutation({
     // Prepare update data with proper typing
     const updateData: {
       updated_at: number
-      email?: string
+      clerk_email?: string
+      notifications_email?: string
       onboarding_completed?: boolean
       weekly_reminder?: boolean
       weekly_reminder_hour?: number
@@ -131,7 +135,10 @@ export const updateAccountSettings = mutation({
     }
 
     // Only include fields that are provided
-    if (args.email !== undefined) updateData.email = args.email
+    if (args.clerk_email !== undefined)
+      updateData.clerk_email = args.clerk_email
+    if (args.notifications_email !== undefined)
+      updateData.notifications_email = args.notifications_email
     if (args.onboarding_completed !== undefined)
       updateData.onboarding_completed = args.onboarding_completed
     if (args.weekly_reminder !== undefined)

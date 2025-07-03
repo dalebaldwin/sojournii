@@ -9,8 +9,11 @@ export async function getClerkUserId(ctx) {
     return null;
   }
   
-  // The tokenIdentifier from Clerk auth is the user ID
-  return identity.tokenIdentifier;
+  // Extract just the user ID part from the token identifier
+  // tokenIdentifier format: "https://domain.clerk.accounts.dev|user_123456"
+  const userId = identity.tokenIdentifier.split('|')[1];
+  
+  return userId;
 }
 
 /**

@@ -1,6 +1,6 @@
 'use client'
 
-import { AccountSettingsForm } from '@/components/account-settings-form'
+import { Heading } from '@/components/ui/heading'
 import { UserButton, useUser } from '@clerk/nextjs'
 
 export default function MyDashboardPage() {
@@ -31,16 +31,16 @@ export default function MyDashboardPage() {
   return (
     <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
       <div className='mb-8 flex items-center justify-between'>
-        <h1 className='font-display text-foreground text-3xl font-bold'>
+        <Heading level='h1' weight='bold'>
           My Dashboard
-        </h1>
+        </Heading>
         <UserButton />
       </div>
 
       <div className='bg-card rounded-lg border p-6 shadow'>
-        <h2 className='font-display text-foreground mb-4 text-xl font-semibold'>
+        <Heading level='h2' weight='bold' className='mb-4'>
           Welcome to your protected area!
-        </h2>
+        </Heading>
         <p className='text-muted-foreground mb-4 font-sans'>
           This is your personal dashboard. Only authenticated users can access
           this area.
@@ -64,8 +64,6 @@ export default function MyDashboardPage() {
           </a>
         </div>
       </div>
-
-      <AccountSettingsForm />
     </div>
   )
 }
