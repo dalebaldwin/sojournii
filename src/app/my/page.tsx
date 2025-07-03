@@ -1,25 +1,10 @@
 'use client'
 
+import { AccountSettingsForm } from '@/components/account-settings-form'
 import { UserButton, useUser } from '@clerk/nextjs'
-import { useMutation, useQuery } from 'convex/react'
-import { useEffect } from 'react'
-import { api } from '../../../convex/_generated/api'
 
 export default function MyDashboardPage() {
   const { user, isLoaded } = useUser()
-  const currentUser = useQuery(api.users.getCurrentUser)
-  const createUser = useMutation(api.users.createUser)
-
-  useEffect(() => {
-    if (isLoaded && user && !currentUser) {
-      // Create user in Convex if they don't exist
-      createUser({
-        name: user.fullName || user.firstName || 'Unknown',
-        email: user.primaryEmailAddress?.emailAddress || '',
-        pictureUrl: user.imageUrl,
-      })
-    }
-  }, [isLoaded, user, currentUser, createUser])
 
   if (!isLoaded) {
     return (
@@ -68,11 +53,6 @@ export default function MyDashboardPage() {
           <p className='text-accent-foreground mt-2 font-mono text-sm'>
             <strong>Email:</strong> {user.primaryEmailAddress?.emailAddress}
           </p>
-          {currentUser && (
-            <p className='text-accent-foreground mt-2 font-mono text-sm'>
-              <strong>Convex User ID:</strong> {currentUser._id}
-            </p>
-          )}
         </div>
 
         <div className='mt-6'>
@@ -84,6 +64,8 @@ export default function MyDashboardPage() {
           </a>
         </div>
       </div>
+
+      <AccountSettingsForm />
     </div>
   )
 }

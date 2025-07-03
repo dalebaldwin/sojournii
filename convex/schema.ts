@@ -3,7 +3,7 @@ import { v } from 'convex/values'
 
 export default defineSchema({
   account_settings: defineTable({
-    clerk_id: v.string(),
+    user_id: v.string(),
     email: v.string(),
     tokenIdentifier: v.string(),
     onboarding_completed: v.boolean(),
@@ -24,5 +24,6 @@ export default defineSchema({
     updated_at: v.number(),
   })
     .index('by_token', ['tokenIdentifier'])
+    .index('by_user', ['user_id'])
     .index('by_email', ['email']),
 })
