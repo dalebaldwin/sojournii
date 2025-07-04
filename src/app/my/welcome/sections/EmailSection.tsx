@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { Label } from '@/components/ui/label'
-import { ClerkUser, WelcomeData } from '@/lib/types'
+import { ClerkUser } from '@/lib/types'
+import { WelcomeData } from '@/lib/welcome-data'
 
 interface EmailSectionProps {
   welcomeData: WelcomeData

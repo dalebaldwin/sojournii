@@ -8,8 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Timezone, WelcomeData } from '@/lib/types'
-import { amPmOptions, daysOfWeek, hours12, minutes } from '@/lib/welcome-data'
+import { Timezone } from '@/lib/types'
+import {
+  amPmOptions,
+  daysOfWeek,
+  hours12,
+  minutes,
+  WelcomeData,
+} from '@/lib/welcome-data'
 
 interface RemindersSectionProps {
   welcomeData: WelcomeData

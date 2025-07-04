@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
-import { ClerkUser, Timezone, WelcomeData } from '@/lib/types'
+import { ClerkUser, Timezone } from '@/lib/types'
+import { WelcomeData } from '@/lib/welcome-data'
 
 interface ConfirmationSectionProps {
   welcomeData: WelcomeData

@@ -18,13 +18,34 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const pathname = usePathname()
   const { user } = useUser()
+
+  // Add refs for outside click handling
+  const userMenuRef = useRef<HTMLDivElement>(null)
+  const userMenuButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Outside click handler for user menu
+  useEffect(() => {
+    if (!isUserMenuOpen) return
+    function handleClick(event: MouseEvent) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node) &&
+        userMenuButtonRef.current &&
+        !userMenuButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [isUserMenuOpen])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
@@ -72,6 +93,7 @@ export function Sidebar() {
       <div className='border-t p-4'>
         <div className='relative'>
           <button
+            ref={userMenuButtonRef}
             onClick={toggleUserMenu}
             className='hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors'
           >
@@ -110,6 +132,7 @@ export function Sidebar() {
           <AnimatePresence>
             {isUserMenuOpen && (
               <motion.div
+                ref={userMenuRef}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}

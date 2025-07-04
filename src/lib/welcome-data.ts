@@ -40,7 +40,13 @@ export type WelcomeStep =
   | 'timezone'
   | 'reminders'
   | 'email'
+  | 'performanceQuestions'
   | 'confirmation'
+
+export interface PerformanceQuestion {
+  title: string
+  description: string
+}
 
 export interface WelcomeData {
   clerk_email: string
@@ -57,4 +63,28 @@ export interface WelcomeData {
   weekly_reminder_hour: number
   weekly_reminder_minute: number
   weekly_reminder_am_pm: 'AM' | 'PM'
+  performanceQuestions: PerformanceQuestion[]
 }
+
+export const defaultPerformanceQuestions: PerformanceQuestion[] = [
+  {
+    title: 'Results & Outcomes (Impact, Goals, Deliverables)',
+    description:
+      'What were your most significant accomplishments during this performance cycle?',
+  },
+  {
+    title: 'Values & Behaviors (Company Values, Collaboration, Ethics)',
+    description:
+      'Which company values did you demonstrate most strongly in your work? Provide examples.',
+  },
+  {
+    title: 'Skills & Growth (Capabilities, Development, Learning)',
+    description:
+      'What new skills or knowledge have you developed in this period?',
+  },
+  {
+    title: 'Future Focus (Goals, Aspirations, Support)',
+    description:
+      'What goals or priorities would you like to focus on in the next cycle?',
+  },
+]

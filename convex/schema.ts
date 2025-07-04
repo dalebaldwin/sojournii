@@ -23,6 +23,14 @@ export default defineSchema({
     weekly_reminder_time_zone: v.string(),
     created_at: v.number(),
     updated_at: v.number(),
+    perf_questions: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          description: v.string(),
+        })
+      )
+    ),
   })
     .index('by_token', ['tokenIdentifier'])
     .index('by_user', ['user_id'])

@@ -10,7 +10,8 @@ import {
 import { Heading } from '@/components/ui/heading'
 import { Label } from '@/components/ui/label'
 import { timezones } from '@/lib/timezones'
-import { Timezone, WelcomeData } from '@/lib/types'
+import { Timezone } from '@/lib/types'
+import { WelcomeData } from '@/lib/welcome-data'
 
 interface TimezoneSectionProps {
   welcomeData: WelcomeData

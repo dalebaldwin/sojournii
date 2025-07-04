@@ -8,7 +8,11 @@ import {
 import { convertTo12Hour, convertTo24Hour } from '@/lib/time-functions'
 import { findTimezone, getUserTimezone } from '@/lib/timezones'
 import { ClerkUser } from '@/lib/types'
-import { WelcomeData, WelcomeStep } from '@/lib/welcome-data'
+import {
+  defaultPerformanceQuestions,
+  WelcomeData,
+  WelcomeStep,
+} from '@/lib/welcome-data'
 import { useUser } from '@clerk/nextjs'
 import { useConvexAuth } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -16,6 +20,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ConfirmationSection } from './sections/ConfirmationSection'
 import { EmailSection } from './sections/EmailSection'
+import { PerformanceQuestionsSection } from './sections/PerformanceQuestionsSection'
 import { RemindersSection } from './sections/RemindersSection'
 import { TimezoneSection } from './sections/TimezoneSection'
 import { WelcomeSection } from './sections/WelcomeSection'
@@ -42,6 +47,7 @@ export default function WelcomePage() {
     weekly_reminder_hour: initial12Hour.hour,
     weekly_reminder_minute: 30,
     weekly_reminder_am_pm: initial12Hour.amPm,
+    performanceQuestions: defaultPerformanceQuestions,
   })
 
   // Check if user already has account settings and redirect if they do
@@ -82,6 +88,7 @@ export default function WelcomePage() {
     'timezone',
     'reminders',
     'email',
+    'performanceQuestions',
     'confirmation',
   ]
 
@@ -137,6 +144,7 @@ export default function WelcomePage() {
         weekly_reminder_minute: welcomeData.weekly_reminder_minute,
         weekly_reminder_day: welcomeData.weekly_reminder_day,
         weekly_reminder_time_zone: welcomeData.timezone,
+        perf_questions: welcomeData.performanceQuestions,
       }
 
       console.log('Settings data to save:', settingsData)
@@ -179,7 +187,7 @@ export default function WelcomePage() {
     <div className='bg-background fixed inset-0 z-50 overflow-hidden'>
       {/* Fixed Sojournii Logo */}
       <div className='absolute top-16 left-8 z-10'>
-        <Heading level='h1' weight='normal'>
+        <Heading level='h1' weight='normal' showLines>
           Sojournii
         </Heading>
       </div>
@@ -230,6 +238,14 @@ export default function WelcomePage() {
                   user={user as ClerkUser}
                   emailError={emailError}
                   handleEmailChange={handleEmailChange}
+                />
+              )}
+
+              {currentStep === 'performanceQuestions' && (
+                <PerformanceQuestionsSection
+                  questions={welcomeData.performanceQuestions}
+                  nextStep={nextStep}
+                  prevStep={prevStep}
                 />
               )}
 

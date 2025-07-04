@@ -11,7 +11,7 @@ interface WelcomeSectionProps {
 export function WelcomeSection({ user, nextStep }: WelcomeSectionProps) {
   return (
     <div className='mx-auto w-full max-w-2xl text-center'>
-      <Heading level='h1' weight='bold' className='mb-6' showLines>
+      <Heading level='h1' weight='normal' className='mb-6' showLines>
         Welcome {user?.firstName || 'there'}
       </Heading>
       {user?.imageUrl && (

@@ -16,21 +16,3 @@ export interface Timezone {
   city: string
   country: string
 }
-
-// Welcome data type definition
-export interface WelcomeData {
-  clerk_email: string
-  notifications_email: string
-  timezone: string
-  weekly_reminder_day:
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday'
-    | 'sunday'
-  weekly_reminder_hour: number
-  weekly_reminder_minute: number
-  weekly_reminder_am_pm: 'AM' | 'PM'
-}

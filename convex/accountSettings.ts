@@ -39,6 +39,14 @@ export const createAccountSettings = mutation({
       v.literal('sunday')
     ),
     weekly_reminder_time_zone: v.string(),
+    perf_questions: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          description: v.string(),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
     const userId = await requireAuth(ctx)
@@ -67,6 +75,7 @@ export const createAccountSettings = mutation({
       weekly_reminder_minute: args.weekly_reminder_minute,
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
+      perf_questions: args.perf_questions,
       created_at: now,
       updated_at: now,
     })
@@ -97,6 +106,14 @@ export const updateAccountSettings = mutation({
       )
     ),
     weekly_reminder_time_zone: v.optional(v.string()),
+    perf_questions: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          description: v.string(),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
     await requireAuth(ctx)
@@ -130,6 +147,10 @@ export const updateAccountSettings = mutation({
         | 'saturday'
         | 'sunday'
       weekly_reminder_time_zone?: string
+      perf_questions?: Array<{
+        title: string
+        description: string
+      }>
     } = {
       updated_at: Date.now(),
     }
@@ -151,6 +172,8 @@ export const updateAccountSettings = mutation({
       updateData.weekly_reminder_day = args.weekly_reminder_day
     if (args.weekly_reminder_time_zone !== undefined)
       updateData.weekly_reminder_time_zone = args.weekly_reminder_time_zone
+    if (args.perf_questions !== undefined)
+      updateData.perf_questions = args.perf_questions
 
     // Update the document
     await ctx.db.patch(args.id, updateData)
