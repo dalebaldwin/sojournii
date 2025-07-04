@@ -2,13 +2,15 @@
   "name": "sojournii",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "node --test"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.23.2",
