@@ -1,18 +1,14 @@
 'use client'
 
-import { Header } from '@/components/layout/header'
+import { Sidebar } from '@/components/layout/sidebar'
 import { QueryProvider } from '@/components/providers/query-provider'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 export default function MyLayout({ children }: { children: React.ReactNode }) {
   return (
     <QueryProvider>
       <div className='bg-background min-h-screen'>
-        <Header />
-        <div className='flex justify-end p-4'>
-          <ThemeToggle />
-        </div>
-        <main>{children}</main>
+        <Sidebar />
+        <main className='pt-16 lg:ml-[275px] lg:pt-0'>{children}</main>
       </div>
     </QueryProvider>
   )

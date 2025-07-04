@@ -11,6 +11,9 @@ importers:
       '@clerk/nextjs':
         specifier: ^6.23.2
         version: 6.23.2(next@15.3.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@clerk/themes':
+        specifier: ^2.2.54
+        version: 2.2.54
       '@radix-ui/react-dialog':
         specifier: ^1.1.14
         version: 1.1.14(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -159,8 +162,16 @@ packages:
       react-dom:
         optional: true
 
+  '@clerk/themes@2.2.54':
+    resolution: {integrity: sha512-SO4qvoP4kU4EiUqu1MEYW5IvcZ4vyeB0DDEk2jZ0C8zeToEUw59op/dsKr5cJa1BHDwSHv/2QskYkiTkD7iBJw==}
+    engines: {node: '>=18.17.0'}
+
   '@clerk/types@4.62.1':
     resolution: {integrity: sha512-qr0HrlM+VS/QEqjRP+1qSp2ipi+MrGGs/ih+HDqe0d/egfobFGGOg0Z759ZBE6Nd5WHWVTWWuFiilnfhJ8QqdQ==}
+    engines: {node: '>=18.17.0'}
+
+  '@clerk/types@4.63.0':
+    resolution: {integrity: sha512-U3FTDzKx8uGve8gtaRv/QpfhEjK/dg9m9BuzIhYEowZ56jNimXDaXuijAcCZEeKwf+DDQmAPaNOinev6D2qtiQ==}
     engines: {node: '>=18.17.0'}
 
   '@emnapi/core@1.4.3':
@@ -2791,7 +2802,16 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
+  '@clerk/themes@2.2.54':
+    dependencies:
+      '@clerk/types': 4.63.0
+      tslib: 2.8.1
+
   '@clerk/types@4.62.1':
+    dependencies:
+      csstype: 3.1.3
+
+  '@clerk/types@4.63.0':
     dependencies:
       csstype: 3.1.3
 

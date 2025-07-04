@@ -1,67 +1,45 @@
 'use client'
 
 import { Heading } from '@/components/ui/heading'
-import { UserButton, useUser } from '@clerk/nextjs'
 
-export default function MyDashboardPage() {
-  const { user, isLoaded } = useUser()
-
-  if (!isLoaded) {
-    return (
-      <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
-        <div className='text-center'>
-          <p className='text-muted-foreground font-sans'>Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
-        <div className='text-center'>
-          <p className='text-muted-foreground font-sans'>
-            Please sign in to access your dashboard.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
+export default function DashboardPage() {
   return (
-    <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
-      <div className='mb-8 flex items-center justify-between'>
-        <Heading level='h1' weight='bold'>
-          My Dashboard
+    <div className='p-6'>
+      <div className='mb-6'>
+        <Heading level='h1' weight='bold' className='mb-2' showLines>
+          Dashboard
         </Heading>
-        <UserButton />
+        <p className='text-muted-foreground'>
+          Welcome to your Sojournii dashboard.
+        </p>
       </div>
 
-      <div className='bg-card rounded-lg border p-6 shadow'>
-        <Heading level='h2' weight='bold' className='mb-4'>
-          Welcome to your protected area!
-        </Heading>
-        <p className='text-muted-foreground mb-4 font-sans'>
-          This is your personal dashboard. Only authenticated users can access
-          this area.
-        </p>
-
-        <div className='bg-accent mt-4 rounded-md p-4'>
-          <p className='text-accent-foreground font-mono text-sm'>
-            <strong>Clerk User ID:</strong> {user.id}
-          </p>
-          <p className='text-accent-foreground mt-2 font-mono text-sm'>
-            <strong>Email:</strong> {user.primaryEmailAddress?.emailAddress}
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+        <div className='bg-muted rounded-lg p-6'>
+          <Heading level='h3' weight='bold' className='mb-2' showLines>
+            Weekly Reminders
+          </Heading>
+          <p className='text-muted-foreground text-sm'>
+            Your next reminder will be sent on Friday at 4:00 PM.
           </p>
         </div>
 
-        <div className='mt-6'>
-          <a
-            href='/my/welcome'
-            className='border-border text-card-foreground bg-card hover:bg-accent inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium transition-colors'
-          >
-            View Welcome Page
-          </a>
+        <div className='bg-muted rounded-lg p-6'>
+          <Heading level='h3' weight='bold' className='mb-2'>
+            Account Status
+          </Heading>
+          <p className='text-muted-foreground text-sm'>
+            Your account is active and ready to use.
+          </p>
+        </div>
+
+        <div className='bg-muted rounded-lg p-6'>
+          <Heading level='h3' weight='bold' className='mb-2'>
+            Quick Actions
+          </Heading>
+          <p className='text-muted-foreground text-sm'>
+            Manage your settings and account preferences.
+          </p>
         </div>
       </div>
     </div>

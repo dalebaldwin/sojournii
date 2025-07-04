@@ -18,14 +18,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useCreateAccountSettings } from '@/hooks/useAccountSettings'
+import {
+  useAccountSettings,
+  useCreateAccountSettings,
+} from '@/hooks/useAccountSettings'
 import { findTimezone, getUserTimezone, timezones } from '@/lib/timezones'
 import { useUser } from '@clerk/nextjs'
 import { useConvexAuth } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type WelcomeStep =
   | 'welcome'
@@ -112,6 +115,7 @@ export default function WelcomePage() {
   const { isAuthenticated } = useConvexAuth()
   const router = useRouter()
   const createSettings = useCreateAccountSettings()
+  const accountSettings = useAccountSettings()
 
   const userTimezone = getUserTimezone()
   const initial12Hour = convertTo12Hour(16) // Default to 4 PM (Friday 4:30 PM)
@@ -129,6 +133,16 @@ export default function WelcomePage() {
     weekly_reminder_am_pm: initial12Hour.amPm,
   })
 
+  // Check if user already has account settings and redirect if they do
+  useEffect(() => {
+    if (isLoaded && user && accountSettings !== undefined) {
+      if (accountSettings) {
+        // User already has account settings, redirect to /my
+        router.replace('/my')
+      }
+    }
+  }, [isLoaded, user, accountSettings, router])
+
   // Wait for Clerk to load and user to be authenticated
   if (!isLoaded || !user) {
     return (
@@ -136,6 +150,20 @@ export default function WelcomePage() {
         Loading...
       </div>
     )
+  }
+
+  // Show loading while checking account settings
+  if (accountSettings === undefined) {
+    return (
+      <div className='text-muted-foreground flex h-screen items-center justify-center text-lg'>
+        Loading...
+      </div>
+    )
+  }
+
+  // If user already has settings, don't render anything (will redirect)
+  if (accountSettings) {
+    return null
   }
 
   const steps: WelcomeStep[] = [
