@@ -51,12 +51,12 @@ const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
 
       // Size-specific positioning and dimensions
       const sizeClasses = {
-        h1: 'after:left-full after:h-[3px] after:w-12 after:-ml-2 before:left-full before:h-[3px] before:w-10 before:ml-2',
-        h2: 'after:left-full after:h-[2.5px] after:w-10 after:-ml-1.5 before:left-full before:h-[2.5px] before:w-8 before:ml-1.5',
-        h3: 'after:left-full after:h-[2px] after:w-8 after:-ml-1 before:left-full before:h-[2px] before:w-6 before:ml-1',
-        h4: 'after:left-full after:h-[1.5px] after:w-6 after:-ml-0.5 before:left-full before:h-[1.5px] before:w-5 before:ml-0.5',
-        h5: 'after:left-full after:h-[1px] after:w-5 after:-ml-0.5 before:left-full before:h-[1px] before:w-4 before:ml-0.5',
-        h6: 'after:left-full after:h-[1px] after:w-4 after:-ml-0.5 before:left-full before:h-[1px] before:w-3 before:ml-0.5',
+        h1: 'after:left-full after:h-[3px] after:w-12 after:ml-0.5 before:left-full before:h-[3px] before:w-12 before:ml-0.5 before:translate-x-[-0.75rem]',
+        h2: 'after:left-full after:h-[2.5px] after:w-10 after:ml-0.25 before:left-full before:h-[2.5px] before:w-10 before:ml-0.25 before:translate-x-[-0.625rem]',
+        h3: 'after:left-full after:h-[2px] after:w-8 after:ml-0.25 before:left-full before:h-[2px] before:w-8 before:ml-0.25 before:translate-x-[-0.5rem]',
+        h4: 'after:left-full after:h-[1.5px] after:w-6 after:ml-0.25 before:left-full before:h-[1.5px] before:w-6 before:ml-0.25 before:translate-x-[-0.375rem]',
+        h5: 'after:left-full after:h-[1px] after:w-5 after:ml-0.25 before:left-full before:h-[1px] before:w-5 before:ml-0.25 before:translate-x-[-0.25rem]',
+        h6: 'after:left-full after:h-[1px] after:w-4 after:ml-0.25 before:left-full before:h-[1px] before:w-4 before:ml-0.25 before:translate-x-[-0.25rem]',
         none: '',
       }
 
