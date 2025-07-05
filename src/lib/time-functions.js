@@ -17,9 +17,9 @@ export const convertTo24Hour = (hour, amPm) => {
  * @param {number} hour24 - Hour in 24-hour format (0-23)
  * @returns {Object} Object with hour (1-12) and amPm ('AM' | 'PM')
  */
-export const convertTo12Hour = (hour24) => {
+export const convertTo12Hour = hour24 => {
   if (hour24 === 0) return { hour: 12, amPm: 'AM' }
   if (hour24 === 12) return { hour: 12, amPm: 'PM' }
   if (hour24 > 12) return { hour: hour24 - 12, amPm: 'PM' }
   return { hour: hour24, amPm: 'AM' }
-} 
+}

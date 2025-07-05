@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
-import { test, describe } from 'node:test'
-import { convertTo24Hour, convertTo12Hour } from './time-functions.js'
+import { describe, test } from 'node:test'
+import { convertTo12Hour, convertTo24Hour } from './time-functions.js'
 
 describe('convertTo24Hour', () => {
   test('should convert 12 AM to 0', () => {
@@ -75,4 +75,4 @@ describe('round-trip conversions', () => {
     const result = convertTo12Hour(hour24)
     assert.deepEqual(result, original)
   })
-}) 
+})

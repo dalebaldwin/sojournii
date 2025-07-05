@@ -4,16 +4,16 @@
  * @returns {string|null} - Clerk user ID or null if not authenticated
  */
 export async function getClerkUserId(ctx) {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await ctx.auth.getUserIdentity()
   if (!identity) {
-    return null;
+    return null
   }
-  
+
   // Extract just the user ID part from the token identifier
   // tokenIdentifier format: "https://domain.clerk.accounts.dev|user_123456"
-  const userId = identity.tokenIdentifier.split('|')[1];
-  
-  return userId;
+  const userId = identity.tokenIdentifier.split('|')[1]
+
+  return userId
 }
 
 /**
@@ -23,11 +23,11 @@ export async function getClerkUserId(ctx) {
  * @throws {Error} - If user is not authenticated
  */
 export async function requireAuth(ctx) {
-  const userId = await getClerkUserId(ctx);
+  const userId = await getClerkUserId(ctx)
   if (!userId) {
-    throw new Error("Authentication required");
+    throw new Error('Authentication required')
   }
-  return userId;
+  return userId
 }
 
 /**
@@ -37,11 +37,11 @@ export async function requireAuth(ctx) {
  * @returns {boolean} - True if user can access the document
  */
 export async function canAccessDocument(ctx, doc) {
-  const userId = await getClerkUserId(ctx);
+  const userId = await getClerkUserId(ctx)
   if (!userId) {
-    return false;
+    return false
   }
-  
+
   // Check if the document's user_id matches the authenticated user
-  return doc.user_id === userId;
-} 
+  return doc.user_id === userId
+}
