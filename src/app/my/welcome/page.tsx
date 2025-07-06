@@ -20,10 +20,13 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ConfirmationSection } from './sections/ConfirmationSection'
 import { EmailSection } from './sections/EmailSection'
+import { EmployerSection } from './sections/EmployerSection'
 import { PerformanceQuestionsSection } from './sections/PerformanceQuestionsSection'
+import { ReadySection } from './sections/ReadySection'
 import { RemindersSection } from './sections/RemindersSection'
 import { TimezoneSection } from './sections/TimezoneSection'
 import { WelcomeSection } from './sections/WelcomeSection'
+import { WorkHoursSection } from './sections/WorkHoursSection'
 
 export default function WelcomePage() {
   const { user, isLoaded } = useUser()
@@ -48,17 +51,50 @@ export default function WelcomePage() {
     weekly_reminder_minute: 30,
     weekly_reminder_am_pm: initial12Hour.amPm,
     performanceQuestions: defaultPerformanceQuestions,
+    work_hours: 38,
+    work_minutes: 0,
+    default_work_from_home: false,
+    break_hours: 0,
+    break_minutes: 30,
+    employers: [
+      {
+        employer_name: '',
+        start_year: undefined,
+        start_month: undefined,
+        start_day: undefined,
+      },
+    ],
   })
 
   // Check if user already has account settings and redirect if they do
   useEffect(() => {
     if (isLoaded && user && accountSettings !== undefined) {
-      if (accountSettings) {
-        // User already has account settings, redirect to /my
+      if (accountSettings?.onboarding_completed && currentStep !== 'ready') {
+        // User already has completed onboarding, redirect to /my
+        // But don't redirect if we're on the ready step
         router.replace('/my')
       }
     }
-  }, [isLoaded, user, accountSettings, router])
+  }, [isLoaded, user, accountSettings, router, currentStep])
+
+  // Validate email when entering the email step
+  useEffect(() => {
+    if (currentStep === 'email') {
+      const emailToValidate =
+        welcomeData.notifications_email ||
+        user?.primaryEmailAddress?.emailAddress ||
+        ''
+      if (emailToValidate && !validateEmail(emailToValidate)) {
+        setEmailError('Please enter a valid email address')
+      } else {
+        setEmailError('')
+      }
+    }
+  }, [
+    currentStep,
+    welcomeData.notifications_email,
+    user?.primaryEmailAddress?.emailAddress,
+  ])
 
   // Wait for Clerk to load and user to be authenticated
   if (!isLoaded || !user) {
@@ -78,8 +114,9 @@ export default function WelcomePage() {
     )
   }
 
-  // If user already has settings, don't render anything (will redirect)
-  if (accountSettings) {
+  // If user already has completed onboarding, don't render anything (will redirect)
+  // But allow the ready step to render
+  if (accountSettings?.onboarding_completed && currentStep !== 'ready') {
     return null
   }
 
@@ -88,8 +125,11 @@ export default function WelcomePage() {
     'timezone',
     'reminders',
     'email',
+    'workHours',
+    'employer',
     'performanceQuestions',
     'confirmation',
+    'ready',
   ]
 
   const nextStep = () => {
@@ -97,14 +137,20 @@ export default function WelcomePage() {
     if (currentIndex < steps.length - 1) {
       // Validate email before proceeding to confirmation
       if (currentStep === 'email') {
-        if (!welcomeData.notifications_email) {
+        const emailToValidate =
+          welcomeData.notifications_email ||
+          user?.primaryEmailAddress?.emailAddress ||
+          ''
+        if (!emailToValidate) {
           setEmailError('Please enter an email address')
           return
         }
-        if (!validateEmail(welcomeData.notifications_email)) {
+        if (!validateEmail(emailToValidate)) {
           setEmailError('Please enter a valid email address')
           return
         }
+        // Clear any error if validation passes
+        setEmailError('')
       }
       setCurrentStep(steps[currentIndex + 1])
     }
@@ -145,6 +191,12 @@ export default function WelcomePage() {
         weekly_reminder_day: welcomeData.weekly_reminder_day,
         weekly_reminder_time_zone: welcomeData.timezone,
         perf_questions: welcomeData.performanceQuestions,
+        work_hours: welcomeData.work_hours,
+        work_minutes: welcomeData.work_minutes,
+        default_work_from_home: welcomeData.default_work_from_home,
+        break_hours: welcomeData.break_hours,
+        break_minutes: welcomeData.break_minutes,
+        employers: welcomeData.employers,
       }
 
       console.log('Settings data to save:', settingsData)
@@ -152,7 +204,8 @@ export default function WelcomePage() {
       const result = await createSettings(settingsData)
       console.log('Save result:', result)
 
-      router.push('/my')
+      // Go to ready step instead of directly to /my
+      setCurrentStep('ready')
     } catch (error) {
       console.error('Error saving settings:', error)
       console.error('Error details:', {
@@ -162,6 +215,14 @@ export default function WelcomePage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleGetStarted = () => {
+    router.push('/my')
+  }
+
+  const goToStep = (step: string) => {
+    setCurrentStep(step as WelcomeStep)
   }
 
   const selectedTimezone = findTimezone(welcomeData.timezone)
@@ -176,6 +237,13 @@ export default function WelcomePage() {
   const handleEmailChange = (email: string) => {
     setWelcomeData(prev => ({ ...prev, notifications_email: email }))
 
+    // If email is empty, it will use the account email, so clear any error
+    if (!email) {
+      setEmailError('')
+      return
+    }
+
+    // Only validate if user has entered a custom email
     if (email && !validateEmail(email)) {
       setEmailError('Please enter a valid email address')
     } else {
@@ -241,6 +309,24 @@ export default function WelcomePage() {
                 />
               )}
 
+              {currentStep === 'workHours' && (
+                <WorkHoursSection
+                  welcomeData={welcomeData}
+                  setWelcomeData={setWelcomeData}
+                  nextStep={nextStep}
+                  prevStep={prevStep}
+                />
+              )}
+
+              {currentStep === 'employer' && (
+                <EmployerSection
+                  welcomeData={welcomeData}
+                  setWelcomeData={setWelcomeData}
+                  nextStep={nextStep}
+                  prevStep={prevStep}
+                />
+              )}
+
               {currentStep === 'performanceQuestions' && (
                 <PerformanceQuestionsSection
                   questions={welcomeData.performanceQuestions}
@@ -252,12 +338,16 @@ export default function WelcomePage() {
               {currentStep === 'confirmation' && (
                 <ConfirmationSection
                   welcomeData={welcomeData}
-                  user={user as ClerkUser}
                   selectedTimezone={selectedTimezone}
                   prevStep={prevStep}
                   handleSave={handleSave}
                   saving={saving}
+                  goToStep={goToStep}
                 />
+              )}
+
+              {currentStep === 'ready' && (
+                <ReadySection onGetStarted={handleGetStarted} />
               )}
             </motion.div>
           </AnimatePresence>

@@ -47,6 +47,24 @@ export const createAccountSettings = mutation({
         })
       )
     ),
+    work_hours: v.optional(v.number()),
+    work_minutes: v.optional(v.number()),
+    default_work_from_home: v.optional(v.boolean()),
+    break_hours: v.optional(v.number()),
+    break_minutes: v.optional(v.number()),
+    employers: v.optional(
+      v.array(
+        v.object({
+          employer_name: v.string(),
+          start_year: v.number(),
+          start_month: v.number(),
+          start_day: v.number(),
+          end_year: v.optional(v.number()),
+          end_month: v.optional(v.number()),
+          end_day: v.optional(v.number()),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
     const userId = await requireAuth(ctx)
@@ -76,9 +94,24 @@ export const createAccountSettings = mutation({
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
       perf_questions: args.perf_questions,
+      work_hours: args.work_hours,
+      work_minutes: args.work_minutes,
+      default_work_from_home: args.default_work_from_home,
+      break_hours: args.break_hours,
+      break_minutes: args.break_minutes,
+      employers: args.employers,
       created_at: now,
       updated_at: now,
     })
+
+    // If onboarding is completed, create the "Joined Sojournii" milestone
+    if (args.onboarding_completed === true) {
+      await ctx.db.insert('milestones', {
+        user_id: userId,
+        event: 0, // 0 = Joined Sojournii
+        created_at: now,
+      })
+    }
 
     return settingsId
   },
@@ -111,6 +144,24 @@ export const updateAccountSettings = mutation({
         v.object({
           title: v.string(),
           description: v.string(),
+        })
+      )
+    ),
+    work_hours: v.optional(v.number()),
+    work_minutes: v.optional(v.number()),
+    default_work_from_home: v.optional(v.boolean()),
+    break_hours: v.optional(v.number()),
+    break_minutes: v.optional(v.number()),
+    employers: v.optional(
+      v.array(
+        v.object({
+          employer_name: v.string(),
+          start_year: v.number(),
+          start_month: v.number(),
+          start_day: v.number(),
+          end_year: v.optional(v.number()),
+          end_month: v.optional(v.number()),
+          end_day: v.optional(v.number()),
         })
       )
     ),
@@ -151,6 +202,20 @@ export const updateAccountSettings = mutation({
         title: string
         description: string
       }>
+      work_hours?: number
+      work_minutes?: number
+      default_work_from_home?: boolean
+      break_hours?: number
+      break_minutes?: number
+      employers?: Array<{
+        employer_name: string
+        start_year: number
+        start_month: number
+        start_day: number
+        end_year?: number
+        end_month?: number
+        end_day?: number
+      }>
     } = {
       updated_at: Date.now(),
     }
@@ -174,11 +239,30 @@ export const updateAccountSettings = mutation({
       updateData.weekly_reminder_time_zone = args.weekly_reminder_time_zone
     if (args.perf_questions !== undefined)
       updateData.perf_questions = args.perf_questions
+    if (args.work_hours !== undefined) updateData.work_hours = args.work_hours
+    if (args.work_minutes !== undefined)
+      updateData.work_minutes = args.work_minutes
+    if (args.default_work_from_home !== undefined)
+      updateData.default_work_from_home = args.default_work_from_home
+    if (args.break_hours !== undefined)
+      updateData.break_hours = args.break_hours
+    if (args.break_minutes !== undefined)
+      updateData.break_minutes = args.break_minutes
+    if (args.employers !== undefined) updateData.employers = args.employers
 
-    // Update the document
     await ctx.db.patch(args.id, updateData)
 
-    return args.id
+    // If onboarding_completed is set to true and was previously false, create a milestone
+    if (
+      args.onboarding_completed === true &&
+      settings.onboarding_completed !== true
+    ) {
+      await ctx.db.insert('milestones', {
+        user_id: settings.user_id,
+        event: 0, // 0 = Joined Sojournii
+        created_at: Date.now(),
+      })
+    }
   },
 })
 
@@ -202,7 +286,6 @@ export const deleteAccountSettings = mutation({
     }
 
     await ctx.db.delete(args.id)
-    return true
   },
 })
 

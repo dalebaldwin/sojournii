@@ -40,8 +40,11 @@ export type WelcomeStep =
   | 'timezone'
   | 'reminders'
   | 'email'
+  | 'workHours'
+  | 'employer'
   | 'performanceQuestions'
   | 'confirmation'
+  | 'ready'
 
 export interface PerformanceQuestion {
   title: string
@@ -64,6 +67,20 @@ export interface WelcomeData {
   weekly_reminder_minute: number
   weekly_reminder_am_pm: 'AM' | 'PM'
   performanceQuestions: PerformanceQuestion[]
+  work_hours: number
+  work_minutes: number
+  default_work_from_home: boolean
+  break_hours: number
+  break_minutes: number
+  employers?: Array<{
+    employer_name: string
+    start_year?: number
+    start_month?: number
+    start_day?: number
+    end_year?: number
+    end_month?: number
+    end_day?: number
+  }>
 }
 
 export const defaultPerformanceQuestions: PerformanceQuestion[] = [

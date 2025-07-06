@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as accountSettings from "../accountSettings.js";
 import type * as lib_auth from "../lib/auth.js";
+import type * as milestones from "../milestones.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as lib_auth from "../lib/auth.js";
 declare const fullApi: ApiFromModules<{
   accountSettings: typeof accountSettings;
   "lib/auth": typeof lib_auth;
+  milestones: typeof milestones;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
