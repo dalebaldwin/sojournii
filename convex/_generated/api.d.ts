@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as accountSettings from "../accountSettings.js";
+import type * as goals from "../goals.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as milestones from "../milestones.js";
 
@@ -27,6 +28,7 @@ import type * as milestones from "../milestones.js";
  */
 declare const fullApi: ApiFromModules<{
   accountSettings: typeof accountSettings;
+  goals: typeof goals;
   "lib/auth": typeof lib_auth;
   milestones: typeof milestones;
 }>;

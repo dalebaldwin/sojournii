@@ -49,6 +49,8 @@ export type WelcomeStep =
 export interface PerformanceQuestion {
   title: string
   description: string
+  description_html?: string
+  description_json?: string
 }
 
 export interface WelcomeData {
@@ -88,20 +90,84 @@ export const defaultPerformanceQuestions: PerformanceQuestion[] = [
     title: 'Results & Outcomes (Impact, Goals, Deliverables)',
     description:
       'What were your most significant accomplishments during this performance cycle?',
+    description_html:
+      '<p>What were your most significant accomplishments during this performance cycle?</p>',
+    description_json: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'What were your most significant accomplishments during this performance cycle?',
+            },
+          ],
+        },
+      ],
+    }),
   },
   {
     title: 'Values & Behaviors (Company Values, Collaboration, Ethics)',
     description:
       'Which company values did you demonstrate most strongly in your work? Provide examples.',
+    description_html:
+      '<p>Which company values did you demonstrate most strongly in your work? Provide examples.</p>',
+    description_json: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'Which company values did you demonstrate most strongly in your work? Provide examples.',
+            },
+          ],
+        },
+      ],
+    }),
   },
   {
     title: 'Skills & Growth (Capabilities, Development, Learning)',
     description:
       'What new skills or knowledge have you developed in this period?',
+    description_html:
+      '<p>What new skills or knowledge have you developed in this period?</p>',
+    description_json: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'What new skills or knowledge have you developed in this period?',
+            },
+          ],
+        },
+      ],
+    }),
   },
   {
     title: 'Future Focus (Goals, Aspirations, Support)',
     description:
       'What goals or priorities would you like to focus on in the next cycle?',
+    description_html:
+      '<p>What goals or priorities would you like to focus on in the next cycle?</p>',
+    description_json: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'What goals or priorities would you like to focus on in the next cycle?',
+            },
+          ],
+        },
+      ],
+    }),
   },
 ]

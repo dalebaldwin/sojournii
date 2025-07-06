@@ -1,6 +1,14 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { WelcomeData } from '@/lib/welcome-data'
 
 interface WorkHoursSectionProps {
@@ -86,23 +94,23 @@ export function WorkHoursSection({
           </div>
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <input
+              <Input
                 id='work-hours'
                 type='number'
                 min='0'
                 max='168'
-                value={welcomeData.work_hours}
+                value={welcomeData.work_hours.toString()}
                 onChange={e => handleWorkHoursChange(Number(e.target.value))}
-                className='w-20 rounded border px-3 py-2'
+                className='h-10 w-20'
               />
               <span className='text-muted-foreground text-sm'>h</span>
-              <input
+              <Input
                 type='number'
                 min='0'
                 max='59'
-                value={welcomeData.work_minutes}
+                value={welcomeData.work_minutes.toString()}
                 onChange={e => handleWorkMinutesChange(Number(e.target.value))}
-                className='w-20 rounded border px-3 py-2'
+                className='h-10 w-20'
               />
               <span className='text-muted-foreground text-sm'>m</span>
             </div>
@@ -140,29 +148,37 @@ export function WorkHoursSection({
         <div className='space-y-2'>
           <Label>Daily Break Time</Label>
           <div className='flex items-center gap-2'>
-            <select
-              value={welcomeData.break_hours}
-              onChange={e => handleBreakHoursChange(Number(e.target.value))}
-              className='rounded border px-3 py-2'
+            <Select
+              value={welcomeData.break_hours.toString()}
+              onValueChange={value => handleBreakHoursChange(Number(value))}
             >
-              {Array.from({ length: maxBreakHours + 1 }, (_, i) => (
-                <option key={i} value={i}>
-                  {i}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className='w-20'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: maxBreakHours + 1 }, (_, i) => (
+                  <SelectItem key={i} value={i.toString()}>
+                    {i}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <span className='text-muted-foreground text-sm'>hours</span>
-            <select
-              value={welcomeData.break_minutes}
-              onChange={e => handleBreakMinutesChange(Number(e.target.value))}
-              className='rounded border px-3 py-2'
+            <Select
+              value={welcomeData.break_minutes.toString()}
+              onValueChange={value => handleBreakMinutesChange(Number(value))}
             >
-              {Array.from({ length: 60 }, (_, i) => (
-                <option key={i} value={i}>
-                  {i.toString().padStart(2, '0')}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className='w-20'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 60 }, (_, i) => (
+                  <SelectItem key={i} value={i.toString()}>
+                    {i.toString().padStart(2, '0')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <span className='text-muted-foreground text-sm'>minutes</span>
           </div>
           <p className='text-muted-foreground text-xs'>

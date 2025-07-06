@@ -12,6 +12,14 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { Heading } from '@/components/ui/heading'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   useAccountSettings,
   useUpdateAccountSettings,
@@ -321,46 +329,68 @@ export default function SettingsPage() {
                     <label className='mb-1 block text-sm font-medium'>
                       Timezone
                     </label>
-                    <div>
+                    <div className='relative'>
                       <Button
                         type='button'
                         variant='outline'
-                        className='w-full text-left'
-                        onClick={() => setShowTimezoneSelector(true)}
+                        className='w-full justify-between text-left'
+                        onClick={() =>
+                          setShowTimezoneSelector(!showTimezoneSelector)
+                        }
                       >
                         {selectedTimezone
                           ? `${selectedTimezone.city}, ${selectedTimezone.country} (${selectedTimezone.label})`
                           : 'Select timezone'}
+                        <svg
+                          className={`h-4 w-4 transition-transform ${showTimezoneSelector ? 'rotate-180' : ''}`}
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M19 9l-7 7-7-7'
+                          />
+                        </svg>
                       </Button>
                       {showTimezoneSelector && (
-                        <div className='absolute z-50 mt-1 w-full'>
-                          <Command className='border-border bg-background rounded-lg border shadow-lg'>
-                            <CommandInput placeholder='Search timezones...' />
-                            <CommandList>
-                              <CommandEmpty>No timezone found.</CommandEmpty>
-                              <CommandGroup>
-                                {timezones.map(tz => (
-                                  <CommandItem
-                                    key={tz.value}
-                                    onSelect={() => {
-                                      setNotifTimezone(tz.value)
-                                      setShowTimezoneSelector(false)
-                                    }}
-                                  >
-                                    <div className='flex w-full items-center justify-between'>
-                                      <span>
-                                        {tz.city}, {tz.country}
-                                      </span>
-                                      <span className='text-muted-foreground'>
-                                        {tz.label}
-                                      </span>
-                                    </div>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </div>
+                        <>
+                          {/* Backdrop to close dropdown */}
+                          <div
+                            className='fixed inset-0 z-40'
+                            onClick={() => setShowTimezoneSelector(false)}
+                          />
+                          <div className='absolute z-50 mt-1 w-full max-w-md'>
+                            <Command className='border-border bg-background rounded-lg border shadow-lg'>
+                              <CommandInput placeholder='Search timezones...' />
+                              <CommandList className='max-h-[200px] overflow-y-auto'>
+                                <CommandEmpty>No timezone found.</CommandEmpty>
+                                <CommandGroup>
+                                  {timezones.map(tz => (
+                                    <CommandItem
+                                      key={tz.value}
+                                      onSelect={() => {
+                                        setNotifTimezone(tz.value)
+                                        setShowTimezoneSelector(false)
+                                      }}
+                                    >
+                                      <div className='flex w-full items-center justify-between'>
+                                        <span>
+                                          {tz.city}, {tz.country}
+                                        </span>
+                                        <span className='text-muted-foreground text-xs'>
+                                          {tz.label}
+                                        </span>
+                                      </div>
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -371,12 +401,11 @@ export default function SettingsPage() {
                       <label className='mb-1 block text-sm font-medium'>
                         Day
                       </label>
-                      <select
-                        className='w-full rounded border px-3 py-2'
+                      <Select
                         value={notifDay}
-                        onChange={e =>
+                        onValueChange={value =>
                           setNotifDay(
-                            e.target.value as
+                            value as
                               | 'monday'
                               | 'tuesday'
                               | 'wednesday'
@@ -387,62 +416,85 @@ export default function SettingsPage() {
                           )
                         }
                       >
-                        {daysOfWeek.map(day => (
-                          <option key={day.value} value={day.value}>
-                            {day.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {daysOfWeek.map(day => (
+                            <SelectItem key={day.value} value={day.value}>
+                              {day.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <label className='mb-1 block text-sm font-medium'>
                         Hour
                       </label>
-                      <select
-                        className='w-full rounded border px-3 py-2'
-                        value={notifHour}
-                        onChange={e => setNotifHour(Number(e.target.value))}
+                      <Select
+                        value={notifHour.toString()}
+                        onValueChange={value => setNotifHour(Number(value))}
                       >
-                        {hours12.map(hour => (
-                          <option key={hour.value} value={hour.value}>
-                            {hour.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {hours12.map(hour => (
+                            <SelectItem
+                              key={hour.value}
+                              value={hour.value.toString()}
+                            >
+                              {hour.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <label className='mb-1 block text-sm font-medium'>
                         Minute
                       </label>
-                      <select
-                        className='w-full rounded border px-3 py-2'
-                        value={notifMinute}
-                        onChange={e => setNotifMinute(Number(e.target.value))}
+                      <Select
+                        value={notifMinute.toString()}
+                        onValueChange={value => setNotifMinute(Number(value))}
                       >
-                        {minutes.map(minute => (
-                          <option key={minute.value} value={minute.value}>
-                            {minute.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {minutes.map(minute => (
+                            <SelectItem
+                              key={minute.value}
+                              value={minute.value.toString()}
+                            >
+                              {minute.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <label className='mb-1 block text-sm font-medium'>
                         AM/PM
                       </label>
-                      <select
-                        className='rounded border px-3 py-2'
+                      <Select
                         value={notifAmPm}
-                        onChange={e =>
-                          setNotifAmPm(e.target.value as 'AM' | 'PM')
+                        onValueChange={value =>
+                          setNotifAmPm(value as 'AM' | 'PM')
                         }
                       >
-                        {amPmOptions.map(opt => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {amPmOptions.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   {/* Email field with validation */}
@@ -450,10 +502,15 @@ export default function SettingsPage() {
                     <label className='mb-1 block text-sm font-medium'>
                       Notification Email
                     </label>
-                    <input
-                      className={`w-full rounded border px-3 py-2 ${emailError ? 'border-red-500' : ''}`}
+                    <Input
+                      type='email'
                       value={notifEmail}
                       onChange={e => setNotifEmail(e.target.value)}
+                      className={
+                        emailError
+                          ? 'border-red-500 focus-visible:ring-red-500'
+                          : ''
+                      }
                     />
                     {emailError && (
                       <div className='mt-1 text-xs text-red-500'>
@@ -550,13 +607,15 @@ export default function SettingsPage() {
                       Work Hours
                     </label>
                     <div className='flex items-center gap-2'>
-                      <input
+                      <Input
                         type='number'
                         min='1'
                         max='168'
-                        value={workHours}
-                        onChange={e => setWorkHours(Number(e.target.value))}
-                        className='w-24 rounded border px-3 py-2'
+                        value={workHours.toString()}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setWorkHours(Number(e.target.value))
+                        }
+                        className='w-24'
                       />
                       <span className='text-muted-foreground text-sm'>
                         hours
@@ -570,13 +629,15 @@ export default function SettingsPage() {
                       Work Minutes
                     </label>
                     <div className='flex items-center gap-2'>
-                      <input
+                      <Input
                         type='number'
                         min='0'
                         max='59'
-                        value={workMinutes}
-                        onChange={e => setWorkMinutes(Number(e.target.value))}
-                        className='w-24 rounded border px-3 py-2'
+                        value={workMinutes.toString()}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          setWorkMinutes(Number(e.target.value))
+                        }
+                        className='w-24'
                       />
                       <span className='text-muted-foreground text-sm'>
                         minutes
@@ -621,38 +682,46 @@ export default function SettingsPage() {
                       Daily Break Time
                     </label>
                     <div className='flex items-center gap-2'>
-                      <select
-                        value={breakHours}
-                        onChange={e => setBreakHours(Number(e.target.value))}
-                        className='rounded border px-3 py-2'
+                      <Select
+                        value={breakHours.toString()}
+                        onValueChange={value => setBreakHours(Number(value))}
                       >
-                        {Array.from(
-                          {
-                            length:
-                              Math.floor((workHours * 60 + workMinutes) / 5) +
-                              1,
-                          },
-                          (_, i) => (
-                            <option key={i} value={i}>
-                              {i}
-                            </option>
-                          )
-                        )}
-                      </select>
+                        <SelectTrigger className='w-20'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from(
+                            {
+                              length:
+                                Math.floor((workHours * 60 + workMinutes) / 5) +
+                                1,
+                            },
+                            (_, i) => (
+                              <SelectItem key={i} value={i.toString()}>
+                                {i}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <span className='text-muted-foreground text-sm'>
                         hours
                       </span>
-                      <select
-                        value={breakMinutes}
-                        onChange={e => setBreakMinutes(Number(e.target.value))}
-                        className='rounded border px-3 py-2'
+                      <Select
+                        value={breakMinutes.toString()}
+                        onValueChange={value => setBreakMinutes(Number(value))}
                       >
-                        {Array.from({ length: 60 }, (_, i) => (
-                          <option key={i} value={i}>
-                            {i.toString().padStart(2, '0')}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-20'>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 60 }, (_, i) => (
+                            <SelectItem key={i} value={i.toString()}>
+                              {i.toString().padStart(2, '0')}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <span className='text-muted-foreground text-sm'>
                         minutes
                       </span>

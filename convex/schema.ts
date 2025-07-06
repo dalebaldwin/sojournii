@@ -46,6 +46,8 @@ export default defineSchema({
         v.object({
           title: v.string(),
           description: v.string(),
+          description_html: v.optional(v.string()),
+          description_json: v.optional(v.string()),
         })
       )
     ),
@@ -61,4 +63,47 @@ export default defineSchema({
   })
     .index('by_user', ['user_id'])
     .index('by_event', ['event']),
+
+  goals: defineTable({
+    user_id: v.string(),
+    name: v.string(),
+    description: v.string(),
+    description_html: v.optional(v.string()),
+    description_json: v.optional(v.string()),
+    target_date: v.optional(v.number()), // Unix timestamp
+    status: v.union(
+      v.literal('active'),
+      v.literal('completed'),
+      v.literal('paused'),
+      v.literal('cancelled')
+    ),
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_status', ['status'])
+    .index('by_user_status', ['user_id', 'status']),
+
+  goal_milestones: defineTable({
+    goal_id: v.id('goals'),
+    user_id: v.string(),
+    name: v.string(),
+    description: v.string(),
+    description_html: v.optional(v.string()),
+    description_json: v.optional(v.string()),
+    target_date: v.optional(v.number()), // Unix timestamp
+    status: v.union(
+      v.literal('pending'),
+      v.literal('in_progress'),
+      v.literal('completed'),
+      v.literal('cancelled')
+    ),
+    order: v.number(), // For ordering milestones within a goal
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_goal', ['goal_id'])
+    .index('by_user', ['user_id'])
+    .index('by_goal_order', ['goal_id', 'order'])
+    .index('by_status', ['status']),
 })

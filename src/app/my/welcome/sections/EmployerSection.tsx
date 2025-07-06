@@ -1,9 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   getDayOptions,
   getMonthOptions,
@@ -183,12 +191,10 @@ export function EmployerSection({
       <div className='space-y-6'>
         <div className='space-y-4'>
           <div className='flex items-center space-x-2'>
-            <input
-              type='checkbox'
+            <Checkbox
               id='no-employer'
               checked={noEmployer}
-              onChange={e => handleNoEmployerChange(e.target.checked)}
-              className='rounded border-gray-300'
+              onCheckedChange={handleNoEmployerChange}
             />
             <Label htmlFor='no-employer' className='text-sm'>
               I do not have an employer
@@ -220,83 +226,93 @@ export function EmployerSection({
                   <div className='flex-[1]'>
                     <Label className='mb-1 block'>Start Date</Label>
                     <div className='flex items-center gap-2'>
-                      <select
+                      <Select
                         value={
                           employer.start_year !== undefined
-                            ? employer.start_year
+                            ? employer.start_year.toString()
                             : ''
                         }
-                        onChange={e =>
-                          handleEmployerChange(
-                            idx,
-                            'start_year',
-                            Number(e.target.value)
-                          )
+                        onValueChange={value =>
+                          handleEmployerChange(idx, 'start_year', Number(value))
                         }
-                        className='rounded border px-3 py-2'
                       >
-                        <option value=''>Year</option>
-                        {yearOptions.map(year => (
-                          <option key={year.value} value={year.value}>
-                            {year.label}
-                          </option>
-                        ))}
-                      </select>
-                      <select
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Year' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {yearOptions.map(year => (
+                            <SelectItem
+                              key={year.value}
+                              value={year.value.toString()}
+                            >
+                              {year.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select
                         value={
                           employer.start_month !== undefined
-                            ? employer.start_month
+                            ? employer.start_month.toString()
                             : ''
                         }
-                        onChange={e =>
+                        onValueChange={value =>
                           handleEmployerChange(
                             idx,
                             'start_month',
-                            Number(e.target.value)
+                            Number(value)
                           )
                         }
-                        className='rounded border px-3 py-2'
                       >
-                        <option value=''>Month</option>
-                        {getFilteredMonthOptions(
-                          typeof employer.start_year === 'number'
-                            ? employer.start_year
-                            : 1
-                        ).map(month => (
-                          <option key={month.value} value={month.value}>
-                            {month.label}
-                          </option>
-                        ))}
-                      </select>
-                      <select
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Month' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getFilteredMonthOptions(
+                            typeof employer.start_year === 'number'
+                              ? employer.start_year
+                              : 1
+                          ).map(month => (
+                            <SelectItem
+                              key={month.value}
+                              value={month.value.toString()}
+                            >
+                              {month.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select
                         value={
                           employer.start_day !== undefined
-                            ? employer.start_day
+                            ? employer.start_day.toString()
                             : ''
                         }
-                        onChange={e =>
-                          handleEmployerChange(
-                            idx,
-                            'start_day',
-                            Number(e.target.value)
-                          )
+                        onValueChange={value =>
+                          handleEmployerChange(idx, 'start_day', Number(value))
                         }
-                        className='rounded border px-3 py-2'
                       >
-                        <option value=''>Day</option>
-                        {getFilteredDayOptions(
-                          typeof employer.start_year === 'number'
-                            ? employer.start_year
-                            : 1,
-                          typeof employer.start_month === 'number'
-                            ? employer.start_month
-                            : 1
-                        ).map(day => (
-                          <option key={day.value} value={day.value}>
-                            {day.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Day' />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getFilteredDayOptions(
+                            typeof employer.start_year === 'number'
+                              ? employer.start_year
+                              : 1,
+                            typeof employer.start_month === 'number'
+                              ? employer.start_month
+                              : 1
+                          ).map(day => (
+                            <SelectItem
+                              key={day.value}
+                              value={day.value.toString()}
+                            >
+                              {day.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   {multiEmployer && employers.length > 1 && (

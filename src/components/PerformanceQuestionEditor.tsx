@@ -1,7 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { TiptapEditor } from '@/components/ui/tiptap-editor'
 import { PerformanceQuestion } from '@/lib/welcome-data'
+import type { JSONContent } from '@tiptap/react'
 import { useState } from 'react'
 
 interface PerformanceQuestionEditorProps {
@@ -36,8 +39,22 @@ export function PerformanceQuestionEditor({
 
   const validateQuestion = (question: PerformanceQuestion): boolean => {
     return (
-      question.title.trim().length > 0 && question.description.trim().length > 0
+      question.title.trim().length > 0 &&
+      (question.description.trim().length > 0 ||
+        Boolean(question.description_html))
     )
+  }
+
+  const handleDescriptionUpdate = (content: {
+    html: string
+    json: JSONContent
+  }) => {
+    setEditedQuestion(prev => ({
+      ...prev,
+      description: content.html || '', // Fallback to HTML for legacy compatibility
+      description_html: content.html,
+      description_json: JSON.stringify(content.json),
+    }))
   }
 
   const handleSave = async () => {
@@ -72,29 +89,28 @@ export function PerformanceQuestionEditor({
           <label className='mb-1 block text-sm font-medium'>
             Question Title
           </label>
-          <input
-            className='w-full rounded border px-3 py-2 font-medium'
+          <Input
             value={editedQuestion.title}
             onChange={e =>
               setEditedQuestion(prev => ({ ...prev, title: e.target.value }))
             }
             placeholder='Question Title'
+            className='font-medium'
           />
         </div>
         <div>
           <label className='mb-1 block text-sm font-medium'>
             Question Description
           </label>
-          <textarea
-            className='min-h-[80px] w-full rounded border px-3 py-2'
-            value={editedQuestion.description}
-            onChange={e =>
-              setEditedQuestion(prev => ({
-                ...prev,
-                description: e.target.value,
-              }))
+          <TiptapEditor
+            content={
+              editedQuestion.description_json
+                ? JSON.parse(editedQuestion.description_json)
+                : editedQuestion.description
             }
+            onUpdate={handleDescriptionUpdate}
             placeholder='Question Description'
+            minHeight='80px'
           />
         </div>
         <div className='flex gap-2'>
@@ -131,9 +147,16 @@ export function PerformanceQuestionEditor({
       <div className='flex items-start justify-between'>
         <div className='flex-1'>
           <h3 className='mb-2 font-medium'>{question.title}</h3>
-          <p className='text-muted-foreground text-sm whitespace-pre-line'>
-            {question.description}
-          </p>
+          <div className='text-muted-foreground text-sm'>
+            {question.description_html ? (
+              <div
+                className='prose prose-sm max-w-none'
+                dangerouslySetInnerHTML={{ __html: question.description_html }}
+              />
+            ) : (
+              <p className='whitespace-pre-line'>{question.description}</p>
+            )}
+          </div>
         </div>
         <Button size='sm' variant='outline' onClick={onEdit}>
           Edit

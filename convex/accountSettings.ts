@@ -44,6 +44,8 @@ export const createAccountSettings = mutation({
         v.object({
           title: v.string(),
           description: v.string(),
+          description_html: v.optional(v.string()),
+          description_json: v.optional(v.string()),
         })
       )
     ),
@@ -144,6 +146,8 @@ export const updateAccountSettings = mutation({
         v.object({
           title: v.string(),
           description: v.string(),
+          description_html: v.optional(v.string()),
+          description_json: v.optional(v.string()),
         })
       )
     ),
@@ -201,6 +205,8 @@ export const updateAccountSettings = mutation({
       perf_questions?: Array<{
         title: string
         description: string
+        description_html?: string
+        description_json?: string
       }>
       work_hours?: number
       work_minutes?: number

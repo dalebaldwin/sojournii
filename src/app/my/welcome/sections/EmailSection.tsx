@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ClerkUser } from '@/lib/types'
 import { WelcomeData } from '@/lib/welcome-data'
@@ -42,7 +43,7 @@ export function EmailSection({
             <Label htmlFor='notification-email'>
               Weekly Notification Email
             </Label>
-            <input
+            <Input
               id='notification-email'
               type='email'
               value={welcomeData.notifications_email}
@@ -50,7 +51,7 @@ export function EmailSection({
               placeholder={
                 user?.primaryEmailAddress?.emailAddress || 'Enter email address'
               }
-              className={`ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-4 py-3 text-base file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${emailError ? 'border-red-500 focus-visible:ring-red-500' : 'border-input bg-background'}`}
+              className={`h-12 ${emailError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
             {emailError && <p className='text-sm text-red-500'>{emailError}</p>}
           </div>

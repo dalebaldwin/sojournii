@@ -19,6 +19,18 @@ export function useAccountSettings() {
   )
 }
 
+// Hook to get user's preferred timezone
+export function useUserTimezone(): string {
+  const accountSettings = useAccountSettings()
+
+  // Return user's preferred timezone, fallback to browser-detected timezone
+  return (
+    accountSettings?.weekly_reminder_time_zone ||
+    Intl.DateTimeFormat().resolvedOptions().timeZone ||
+    'UTC'
+  )
+}
+
 // Hook to check if user has completed onboarding
 export function useOnboardingStatus() {
   const { isAuthenticated } = useConvexAuth()

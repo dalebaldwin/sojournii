@@ -29,7 +29,12 @@ export function ProgressBar({
   }, [progressPercentage])
 
   return (
-    <div className={cn('fixed top-0 right-0 left-0 z-50', className)}>
+    <div
+      className={cn(
+        'fixed top-0 right-0 left-0 z-50 lg:left-[275px]',
+        className
+      )}
+    >
       <div className='bg-muted/50 h-[10px] w-full'>
         <div
           className='bg-primary h-full transition-all duration-500 ease-out'

@@ -8,10 +8,12 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronDown,
   HelpCircle,
+  LayoutDashboard,
   LogOut,
   Mail,
   Menu,
   Settings,
+  Target,
   User,
   X,
 } from 'lucide-react'
@@ -50,7 +52,10 @@ export function Sidebar() {
   const toggleMenu = () => setIsOpen(!isOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
 
-  const navItems = [{ href: '/my', label: 'Dashboard' }]
+  const navItems = [
+    { href: '/my', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/my/goals', label: 'Goals', icon: Target },
+  ]
 
   const userMenuItems = [
     { href: '/my/accounts', label: 'Account', icon: User },
@@ -72,20 +77,24 @@ export function Sidebar() {
       {/* Main Navigation */}
       <nav className='flex-1 p-4'>
         <div className='space-y-2'>
-          {navItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                pathname === item.href
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map(item => {
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  pathname === item.href
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                )}
+              >
+                <Icon className='h-4 w-4' />
+                {item.label}
+              </Link>
+            )
+          })}
         </div>
       </nav>
 
