@@ -178,6 +178,25 @@ export default function WelcomePage() {
         welcomeData.weekly_reminder_am_pm
       )
 
+      // Filter and format employers to ensure required fields are present
+      const validEmployers = welcomeData.employers
+        ?.filter(
+          emp =>
+            emp.employer_name.trim() &&
+            emp.start_year &&
+            emp.start_month &&
+            emp.start_day
+        )
+        .map(emp => ({
+          employer_name: emp.employer_name,
+          start_year: emp.start_year!,
+          start_month: emp.start_month!,
+          start_day: emp.start_day!,
+          end_year: emp.end_year,
+          end_month: emp.end_month,
+          end_day: emp.end_day,
+        }))
+
       const settingsData = {
         clerk_email: user?.primaryEmailAddress?.emailAddress || '',
         notifications_email:
@@ -196,7 +215,7 @@ export default function WelcomePage() {
         default_work_from_home: welcomeData.default_work_from_home,
         break_hours: welcomeData.break_hours,
         break_minutes: welcomeData.break_minutes,
-        employers: welcomeData.employers,
+        employers: validEmployers,
       }
 
       console.log('Settings data to save:', settingsData)

@@ -26,7 +26,7 @@ import {
   PerformanceQuestion,
 } from '@/lib/welcome-data'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function SettingsPage() {
   const accountSettings = useAccountSettings()
@@ -112,20 +112,21 @@ export default function SettingsPage() {
   }, [accountSettings])
 
   // Clean up blank questions from database
-  const cleanupBlankQuestions = async (
-    validQuestions: PerformanceQuestion[]
-  ) => {
-    if (!accountSettings?._id) return
+  const cleanupBlankQuestions = useCallback(
+    async (validQuestions: PerformanceQuestion[]) => {
+      if (!accountSettings?._id) return
 
-    try {
-      await updateAccountSettings({
-        id: accountSettings._id,
-        perf_questions: validQuestions,
-      })
-    } catch (error) {
-      console.error('Error cleaning up blank questions:', error)
-    }
-  }
+      try {
+        await updateAccountSettings({
+          id: accountSettings._id,
+          perf_questions: validQuestions,
+        })
+      } catch (error) {
+        console.error('Error cleaning up blank questions:', error)
+      }
+    },
+    [accountSettings?._id, updateAccountSettings]
+  )
 
   // Email validation
   const validateEmail = (email: string) =>
