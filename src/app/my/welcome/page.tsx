@@ -1,6 +1,7 @@
 'use client'
 
 import { Heading } from '@/components/ui/heading'
+import { ProgressBar } from '@/components/ui/progress-bar'
 import {
   useAccountSettings,
   useCreateAccountSettings,
@@ -131,6 +132,10 @@ export default function WelcomePage() {
     'confirmation',
     'ready',
   ]
+
+  // Calculate current step index for progress bar
+  const currentStepIndex = steps.indexOf(currentStep)
+  const totalSteps = steps.length - 1
 
   const nextStep = () => {
     const currentIndex = steps.indexOf(currentStep)
@@ -272,8 +277,11 @@ export default function WelcomePage() {
 
   return (
     <div className='bg-background fixed inset-0 z-50 overflow-hidden'>
+      {/* Progress Bar */}
+      <ProgressBar currentStep={currentStepIndex} totalSteps={totalSteps} />
+
       {/* Fixed Sojournii Logo */}
-      <div className='absolute top-16 left-8 z-10'>
+      <div className='absolute top-20 left-8 z-10'>
         <Heading level='h1' weight='normal' showLines>
           Sojournii
         </Heading>

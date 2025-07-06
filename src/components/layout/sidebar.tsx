@@ -62,8 +62,8 @@ export function Sidebar() {
   const SidebarContent = () => (
     <div className='bg-background flex h-full flex-col border-r'>
       {/* Header with Logo and Theme Toggle */}
-      <div className='flex items-center justify-between border-b p-4'>
-        <Heading level='h2' weight='normal' className='text-lg'>
+      <div className='flex items-center justify-between border-b p-2'>
+        <Heading level='h6' weight='normal' className='pb-0 text-lg' showLines>
           Sojournii
         </Heading>
         <ThemeToggle />
@@ -90,12 +90,12 @@ export function Sidebar() {
       </nav>
 
       {/* User Menu */}
-      <div className='border-t p-4'>
+      <div className='border-t p-2'>
         <div className='relative'>
           <button
             ref={userMenuButtonRef}
             onClick={toggleUserMenu}
-            className='hover:bg-muted flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors'
+            className='hover:bg-muted flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium transition-colors'
           >
             <div className='flex flex-1 items-center gap-3'>
               {user?.imageUrl ? (

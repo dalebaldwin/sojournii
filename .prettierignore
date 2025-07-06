@@ -101,3 +101,7 @@ pnpm-lock.yaml
 # Generated files
 *.min.js
 *.min.css 
+
+# convext
+
+convex/_generated
