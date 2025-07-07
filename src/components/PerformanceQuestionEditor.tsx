@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TiptapEditor } from '@/components/ui/tiptap-editor'
+import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { PerformanceQuestion } from '@/lib/welcome-data'
 import type { JSONContent } from '@tiptap/react'
 import { useState } from 'react'
@@ -148,14 +149,10 @@ export function PerformanceQuestionEditor({
         <div className='flex-1'>
           <h3 className='mb-2 font-medium'>{question.title}</h3>
           <div className='text-muted-foreground text-sm'>
-            {question.description_html ? (
-              <div
-                className='prose prose-sm max-w-none'
-                dangerouslySetInnerHTML={{ __html: question.description_html }}
-              />
-            ) : (
-              <p className='whitespace-pre-line'>{question.description}</p>
-            )}
+            <TiptapRenderer
+              content={question.description_html}
+              fallback={question.description}
+            />
           </div>
         </div>
         <Button size='sm' variant='outline' onClick={onEdit}>

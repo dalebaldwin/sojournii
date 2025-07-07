@@ -370,3 +370,36 @@ export const getTodayInTimezone = (timezone: string): Date => {
   const today = new Date()
   return getStartOfDayInTimezone(today, timezone)
 }
+
+/**
+ * Convert a Date object selected in the browser to a timezone-aware timestamp for storage
+ * This ensures that a date selected in the UI represents the same calendar date in the user's timezone
+ * @param selectedDate - Date object selected by the user (represents a calendar date)
+ * @param userTimezone - User's preferred timezone
+ * @returns Unix timestamp representing the start of the selected day in the user's timezone
+ */
+export const convertSelectedDateToTimestamp = (
+  selectedDate: Date,
+  userTimezone: string
+): number => {
+  try {
+    // Get the year, month, and day from the selected date
+    const year = selectedDate.getFullYear()
+    const month = selectedDate.getMonth() + 1 // getMonth() returns 0-11, we need 1-12
+    const day = selectedDate.getDate()
+
+    // Create a date representing the start of that day in the user's timezone
+    const dateInUserTimezone = createDateInTimezone(
+      year,
+      month,
+      day,
+      userTimezone
+    )
+
+    return dateInUserTimezone.getTime()
+  } catch (error) {
+    console.warn('Error converting selected date to timestamp:', error)
+    // Fallback: use the selected date as-is
+    return selectedDate.getTime()
+  }
+}

@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
+import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
 import { formatTimestampInTimezone } from '@/lib/time-functions'
 import { GoalData, GoalStep } from '@/lib/types'
@@ -59,7 +60,11 @@ export function ConfirmationSection({
             </div>
             <div>
               <span className='text-sm font-medium'>Description:</span>
-              <p className='text-foreground'>{goalData.description}</p>
+              <TiptapRenderer
+                content={goalData.description_html}
+                fallback={goalData.description}
+                className='text-foreground'
+              />
             </div>
           </div>
         </div>
@@ -119,9 +124,11 @@ export function ConfirmationSection({
                   <Target className='text-primary h-4 w-4' />
                   <span className='font-medium'>{milestone.name}</span>
                 </div>
-                <p className='text-muted-foreground mb-2 text-sm'>
-                  {milestone.description}
-                </p>
+                <TiptapRenderer
+                  content={milestone.description_html}
+                  fallback={milestone.description}
+                  className='text-muted-foreground text-sm'
+                />
                 {milestone.target_date && (
                   <div className='flex items-center gap-2 text-sm'>
                     <Calendar className='h-3 w-3' />

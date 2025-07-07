@@ -1,12 +1,15 @@
 'use client'
 
 import { ProgressBar } from '@/components/ui/progress-bar'
-import { useCreateGoalWithMilestones } from '@/hooks/useGoals'
+import { useUserTimezone } from '@/hooks/useAccountSettings'
+import { convertSelectedDateToTimestamp } from '@/lib/time-functions'
 import { GoalData, GoalStep } from '@/lib/types'
 import { useUser } from '@clerk/nextjs'
+import { useMutation } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { api } from '../../../../../convex/_generated/api'
 import { ConfirmationSection } from './sections/ConfirmationSection'
 import { GoalDateSection } from './sections/GoalDateSection'
 import { GoalDetailsSection } from './sections/GoalDetailsSection'
@@ -16,13 +19,18 @@ import { MilestonesSection } from './sections/MilestonesSection'
 export default function GuidedGoalsPage() {
   const { user, isLoaded } = useUser()
   const router = useRouter()
-  const createGoalWithMilestones = useCreateGoalWithMilestones()
+  const createGoalWithMilestones = useMutation(
+    api.goals.createGoalWithMilestones
+  )
+  const userTimezone = useUserTimezone()
 
   const [currentStep, setCurrentStep] = useState<GoalStep>('intro')
   const [saving, setSaving] = useState(false)
   const [goalData, setGoalData] = useState<GoalData>({
     name: '',
     description: '',
+    description_html: '',
+    description_json: '',
     target_date: undefined,
     milestones: [],
   })
@@ -70,8 +78,10 @@ export default function GuidedGoalsPage() {
       const milestonesForSaving = goalData.milestones.map(milestone => ({
         name: milestone.name,
         description: milestone.description,
+        description_html: milestone.description_html,
+        description_json: milestone.description_json,
         target_date: milestone.target_date
-          ? milestone.target_date.getTime()
+          ? convertSelectedDateToTimestamp(milestone.target_date, userTimezone)
           : undefined,
       }))
 
@@ -80,8 +90,10 @@ export default function GuidedGoalsPage() {
         goal: {
           name: goalData.name,
           description: goalData.description,
+          description_html: goalData.description_html,
+          description_json: goalData.description_json,
           target_date: goalData.target_date
-            ? goalData.target_date.getTime()
+            ? convertSelectedDateToTimestamp(goalData.target_date, userTimezone)
             : undefined,
         },
         milestones: milestonesForSaving,
@@ -105,7 +117,11 @@ export default function GuidedGoalsPage() {
     <div className='bg-background min-h-screen'>
       {/* Progress bar - only show after intro */}
       {currentStep !== 'intro' && (
-        <ProgressBar currentStep={currentStepIndex} totalSteps={totalSteps} />
+        <ProgressBar
+          currentStep={currentStepIndex}
+          totalSteps={totalSteps}
+          withSidebar={true}
+        />
       )}
 
       <div className='flex min-h-screen flex-col items-center justify-center p-4'>

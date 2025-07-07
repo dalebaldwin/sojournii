@@ -278,7 +278,11 @@ export default function WelcomePage() {
   return (
     <div className='bg-background fixed inset-0 z-50 overflow-hidden'>
       {/* Progress Bar */}
-      <ProgressBar currentStep={currentStepIndex} totalSteps={totalSteps} />
+      <ProgressBar
+        currentStep={currentStepIndex}
+        totalSteps={totalSteps}
+        withSidebar={false}
+      />
 
       {/* Fixed Sojournii Logo */}
       <div className='absolute top-20 left-8 z-10'>

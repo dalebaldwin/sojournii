@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { ClerkUser } from '@/lib/types'
 import { CheckCircle, Target, TrendingUp } from 'lucide-react'
-import Image from 'next/image'
 
 interface IntroSectionProps {
   user: ClerkUser
@@ -15,18 +14,6 @@ export function IntroSection({ user, nextStep }: IntroSectionProps) {
       <Heading level='h1' weight='normal' className='mb-6' showLines>
         Create Your Goal
       </Heading>
-
-      {user?.imageUrl && (
-        <div className='mb-6 flex justify-center'>
-          <Image
-            src={user.imageUrl}
-            alt={`${user.firstName || 'User'}'s avatar`}
-            className='h-[100px] w-[100px] rounded-full object-cover'
-            width={100}
-            height={100}
-          />
-        </div>
-      )}
 
       <p className='text-muted-foreground mb-8 text-xl'>
         Let&apos;s turn your aspirations into achievable reality through

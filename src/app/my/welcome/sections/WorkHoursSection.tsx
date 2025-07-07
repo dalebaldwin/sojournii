@@ -80,8 +80,8 @@ export function WorkHoursSection({
           Work Hours
         </Heading>
         <p className='text-muted-foreground'>
-          We need your work hours to help you keep track of your time and ensure
-          you&apos;re maintaining a healthy work-life balance.
+          Lets setup your default work hours, and break time. Don&apos;t worry
+          if your day fluctuates these are just our default starting points.
         </p>
       </div>
 

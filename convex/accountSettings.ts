@@ -1,4 +1,5 @@
 import { v } from 'convex/values'
+import { MILESTONE_EVENTS } from '../src/lib/milestone-events'
 import { mutation, query } from './_generated/server'
 import { canAccessDocument, getClerkUserId, requireAuth } from './lib/auth'
 
@@ -110,7 +111,7 @@ export const createAccountSettings = mutation({
     if (args.onboarding_completed === true) {
       await ctx.db.insert('milestones', {
         user_id: userId,
-        event: 0, // 0 = Joined Sojournii
+        event: MILESTONE_EVENTS.JOINED_SOJOURNII,
         created_at: now,
       })
     }
@@ -265,7 +266,7 @@ export const updateAccountSettings = mutation({
     ) {
       await ctx.db.insert('milestones', {
         user_id: settings.user_id,
-        event: 0, // 0 = Joined Sojournii
+        event: MILESTONE_EVENTS.JOINED_SOJOURNII,
         created_at: Date.now(),
       })
     }

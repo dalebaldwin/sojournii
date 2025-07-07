@@ -58,7 +58,7 @@ export default defineSchema({
 
   milestones: defineTable({
     user_id: v.string(),
-    event: v.number(),
+    event: v.union(v.literal('joined_sojournii'), v.literal('new_employer')),
     created_at: v.number(),
   })
     .index('by_user', ['user_id'])

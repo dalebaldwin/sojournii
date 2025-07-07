@@ -7,12 +7,14 @@ interface ProgressBarProps {
   currentStep: number
   totalSteps: number
   className?: string
+  withSidebar?: boolean
 }
 
 export function ProgressBar({
   currentStep,
   totalSteps,
   className,
+  withSidebar = false,
 }: ProgressBarProps) {
   const [displayProgress, setDisplayProgress] = useState(0)
 
@@ -31,7 +33,8 @@ export function ProgressBar({
   return (
     <div
       className={cn(
-        'fixed top-0 right-0 left-0 z-50 lg:left-[275px]',
+        'fixed top-0 right-0 left-0 z-50',
+        withSidebar && 'lg:left-[275px]',
         className
       )}
     >

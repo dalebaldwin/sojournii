@@ -341,3 +341,18 @@ export const createGoalWithMilestones = mutation({
     return goalId
   },
 })
+
+// Get all milestones for a user (for dashboard stats)
+export const getUserMilestones = query({
+  handler: async ctx => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) {
+      throw new Error('Not authenticated')
+    }
+
+    return await ctx.db
+      .query('goal_milestones')
+      .withIndex('by_user', q => q.eq('user_id', identity.subject))
+      .collect()
+  },
+})
