@@ -53,11 +53,12 @@ export function Sidebar() {
   const toggleMenu = () => setIsOpen(!isOpen)
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen)
 
-  const navItems = [
+  const overviewItems = [
     { href: '/my', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/my/goals', label: 'Goals', icon: Target },
     { href: '/my/timeline', label: 'Timeline', icon: Clock },
   ]
+
+  const contentItems = [{ href: '/my/goals', label: 'Goals', icon: Target }]
 
   const userMenuItems = [
     { href: '/my/accounts', label: 'Account', icon: User },
@@ -78,25 +79,53 @@ export function Sidebar() {
 
       {/* Main Navigation */}
       <nav className='flex-1 p-4'>
-        <div className='space-y-2'>
-          {navItems.map(item => {
-            const Icon = item.icon
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  pathname === item.href
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                )}
-              >
-                <Icon className='h-4 w-4' />
-                {item.label}
-              </Link>
-            )
-          })}
+        <div className='space-y-4'>
+          {/* Overview Section */}
+          <div className='space-y-2'>
+            {overviewItems.map(item => {
+              const Icon = item.icon
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    pathname === item.href
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  )}
+                >
+                  <Icon className='h-4 w-4' />
+                  {item.label}
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Separator */}
+          <div className='border-t' />
+
+          {/* Content Section */}
+          <div className='space-y-2'>
+            {contentItems.map(item => {
+              const Icon = item.icon
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    pathname === item.href
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  )}
+                >
+                  <Icon className='h-4 w-4' />
+                  {item.label}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </nav>
 
