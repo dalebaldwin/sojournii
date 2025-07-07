@@ -1,5 +1,5 @@
 import { v } from 'convex/values'
-import { MILESTONE_EVENTS } from '../src/lib/milestone-events'
+import { TIMELINE_EVENT_TYPES } from '../src/lib/milestone-events'
 import { mutation, query } from './_generated/server'
 import { canAccessDocument, getClerkUserId, requireAuth } from './lib/auth'
 
@@ -109,9 +109,11 @@ export const createAccountSettings = mutation({
 
     // If onboarding is completed, create the "Joined Sojournii" milestone
     if (args.onboarding_completed === true) {
-      await ctx.db.insert('milestones', {
+      await ctx.db.insert('timeline_events', {
         user_id: userId,
-        event: MILESTONE_EVENTS.JOINED_SOJOURNII,
+        event_type: TIMELINE_EVENT_TYPES.JOINED_SOJOURNII,
+        title: 'Joined Sojournii',
+        description: 'Welcome to Sojournii! Your journey begins here.',
         created_at: now,
       })
     }
@@ -264,9 +266,11 @@ export const updateAccountSettings = mutation({
       args.onboarding_completed === true &&
       settings.onboarding_completed !== true
     ) {
-      await ctx.db.insert('milestones', {
+      await ctx.db.insert('timeline_events', {
         user_id: settings.user_id,
-        event: MILESTONE_EVENTS.JOINED_SOJOURNII,
+        event_type: TIMELINE_EVENT_TYPES.JOINED_SOJOURNII,
+        title: 'Joined Sojournii',
+        description: 'Welcome to Sojournii! Your journey begins here.',
         created_at: Date.now(),
       })
     }

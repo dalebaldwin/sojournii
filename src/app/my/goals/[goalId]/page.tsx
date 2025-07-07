@@ -17,6 +17,13 @@ import { TiptapEditor } from '@/components/ui/tiptap-editor'
 import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
 import {
+  useCreateMilestone,
+  useDeleteMilestone,
+  useGoal,
+  useGoalMilestones,
+  useUpdateMilestone,
+} from '@/hooks/useGoals'
+import {
   convertSelectedDateToTimestamp,
   formatTimestampInTimezone,
   getTomorrowInTimezone,
@@ -24,7 +31,7 @@ import {
 } from '@/lib/time-functions'
 import { useUser } from '@clerk/nextjs'
 import { JSONContent } from '@tiptap/react'
-import { useMutation, useQuery } from 'convex/react'
+import { useMutation } from 'convex/react'
 import {
   ArrowLeft,
   Calendar,
@@ -51,7 +58,7 @@ interface GoalDetailsPageProps {
 }
 
 interface MilestoneData {
-  _id?: Id<'goal_milestones'>
+  _id?: string
   name: string
   description: string
   description_html?: string
@@ -67,13 +74,13 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
   const resolvedParams = use(params)
   const goalId = resolvedParams.goalId as Id<'goals'>
 
-  const goal = useQuery(api.goals.getGoal, { goalId })
-  const milestones = useQuery(api.goals.getGoalMilestones, { goalId })
+  const goal = useGoal(goalId)
+  const milestones = useGoalMilestones(goalId)
 
   const updateGoal = useMutation(api.goals.updateGoal)
-  const updateMilestone = useMutation(api.goals.updateMilestone)
-  const createMilestone = useMutation(api.goals.createMilestone)
-  const deleteMilestone = useMutation(api.goals.deleteMilestone)
+  const updateMilestone = useUpdateMilestone()
+  const createMilestone = useCreateMilestone()
+  const deleteMilestone = useDeleteMilestone()
 
   const [editingGoal, setEditingGoal] = useState(false)
   const [editingMilestones, setEditingMilestones] = useState<Set<string>>(
@@ -140,7 +147,7 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
   }
 
   const initializeMilestoneEditing = (milestone: {
-    _id: Id<'goal_milestones'>
+    _id: string
     name: string
     description: string
     description_html?: string
@@ -190,7 +197,7 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
     try {
       const milestoneData = editingMilestoneData[milestoneId]
       await updateMilestone({
-        milestoneId: milestoneId as Id<'goal_milestones'>,
+        milestoneId: milestoneId,
         name: milestoneData.name,
         description: milestoneData.description,
         description_html: milestoneData.description_html,
@@ -256,7 +263,7 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
   const handleDeleteMilestone = async (milestoneId: string) => {
     try {
       await deleteMilestone({
-        milestoneId: milestoneId as Id<'goal_milestones'>,
+        milestoneId: milestoneId,
       })
     } catch (error) {
       console.error('Error deleting milestone:', error)

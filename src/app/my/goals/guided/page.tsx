@@ -87,15 +87,13 @@ export default function GuidedGoalsPage() {
 
       // Create the goal with milestones
       await createGoalWithMilestones({
-        goal: {
-          name: goalData.name,
-          description: goalData.description,
-          description_html: goalData.description_html,
-          description_json: goalData.description_json,
-          target_date: goalData.target_date
-            ? convertSelectedDateToTimestamp(goalData.target_date, userTimezone)
-            : undefined,
-        },
+        name: goalData.name,
+        description: goalData.description,
+        description_html: goalData.description_html,
+        description_json: goalData.description_json,
+        target_date: goalData.target_date
+          ? convertSelectedDateToTimestamp(goalData.target_date, userTimezone)
+          : undefined,
         milestones: milestonesForSaving,
       })
 

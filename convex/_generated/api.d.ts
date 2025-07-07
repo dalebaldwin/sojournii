@@ -17,6 +17,7 @@ import type * as accountSettings from "../accountSettings.js";
 import type * as goals from "../goals.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as milestones from "../milestones.js";
+import type * as timeline from "../timeline.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   goals: typeof goals;
   "lib/auth": typeof lib_auth;
   milestones: typeof milestones;
+  timeline: typeof timeline;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

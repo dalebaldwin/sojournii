@@ -56,14 +56,6 @@ export default defineSchema({
     .index('by_user', ['user_id'])
     .index('clerk_email', ['clerk_email']),
 
-  milestones: defineTable({
-    user_id: v.string(),
-    event: v.union(v.literal('joined_sojournii'), v.literal('new_employer')),
-    created_at: v.number(),
-  })
-    .index('by_user', ['user_id'])
-    .index('by_event', ['event']),
-
   goals: defineTable({
     user_id: v.string(),
     name: v.string(),
@@ -98,12 +90,51 @@ export default defineSchema({
       v.literal('completed'),
       v.literal('cancelled')
     ),
-    order: v.number(), // For ordering milestones within a goal
+    order: v.number(),
     created_at: v.number(),
     updated_at: v.number(),
   })
     .index('by_goal', ['goal_id'])
     .index('by_user', ['user_id'])
     .index('by_goal_order', ['goal_id', 'order'])
-    .index('by_status', ['status']),
+    .index('by_status', ['status'])
+    .index('by_user_status', ['user_id', 'status']),
+
+  timeline_events: defineTable({
+    user_id: v.string(),
+    event_type: v.union(
+      // User milestones
+      v.literal('joined_sojournii'),
+      v.literal('new_employer'),
+      // Goal events
+      v.literal('goal_created'),
+      v.literal('goal_status_changed'),
+      v.literal('goal_updated'),
+      v.literal('goal_deleted'),
+      // Goal milestone events
+      v.literal('goal_milestone_created'),
+      v.literal('goal_milestone_status_changed'),
+      v.literal('goal_milestone_updated'),
+      v.literal('goal_milestone_deleted'),
+      // User update events
+      v.literal('user_goal_update')
+    ),
+    // Content reference system
+    content_id: v.optional(v.string()), // ID of the related content (goal, milestone, etc.)
+    content_type: v.optional(
+      v.union(v.literal('goal'), v.literal('milestone'), v.literal('user'))
+    ),
+    // Event metadata (brief descriptions for timeline display)
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    // Previous and new values for change events
+    previous_value: v.optional(v.string()),
+    new_value: v.optional(v.string()),
+    created_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_event_type', ['event_type'])
+    .index('by_content', ['content_id'])
+    .index('by_content_type', ['content_type'])
+    .index('by_user_created', ['user_id', 'created_at']),
 })

@@ -7,6 +7,7 @@ import { SignOutButton, useUser } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronDown,
+  Clock,
   HelpCircle,
   LayoutDashboard,
   LogOut,
@@ -55,6 +56,7 @@ export function Sidebar() {
   const navItems = [
     { href: '/my', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/my/goals', label: 'Goals', icon: Target },
+    { href: '/my/timeline', label: 'Timeline', icon: Clock },
   ]
 
   const userMenuItems = [

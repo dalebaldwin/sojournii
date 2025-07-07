@@ -39,7 +39,7 @@ export interface Goal {
 }
 
 export interface GoalMilestone {
-  _id: string
+  _id: string // ID from goal_milestones table
   goal_id: string
   user_id: string
   name: string
@@ -69,6 +69,8 @@ export interface MilestoneData {
   description_html?: string
   description_json?: string
   target_date?: Date
+  status?: MilestoneStatus
+  order?: number
 }
 
 // Step type for the guided goal creation flow

@@ -5,11 +5,10 @@ import { Heading } from '@/components/ui/heading'
 import { Separator } from '@/components/ui/separator'
 import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
-import { useUserGoals } from '@/hooks/useGoals'
+import { useUserGoals, useUserMilestones } from '@/hooks/useGoals'
 import { formatTimestampInTimezone } from '@/lib/time-functions'
 import { Goal } from '@/lib/types'
 import { useUser } from '@clerk/nextjs'
-import { useQuery } from 'convex/react'
 import {
   AlertCircle,
   Calendar,
@@ -20,7 +19,6 @@ import {
   Target,
 } from 'lucide-react'
 import Link from 'next/link'
-import { api } from '../../../../convex/_generated/api'
 
 interface Milestone {
   _id: string
@@ -41,7 +39,7 @@ export default function GoalsPage() {
   const { user, isLoaded } = useUser()
   const goals = useUserGoals()
   const userTimezone = useUserTimezone()
-  const milestones = useQuery(api.goals.getUserMilestones)
+  const milestones = useUserMilestones()
 
   if (!isLoaded || !user) {
     return (
