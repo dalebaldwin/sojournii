@@ -188,4 +188,17 @@ export default defineSchema({
     .index('by_content', ['content_id'])
     .index('by_content_type', ['content_type'])
     .index('by_user_created', ['user_id', 'created_at']),
+
+  notes: defineTable({
+    user_id: v.string(),
+    title: v.string(),
+    content: v.string(),
+    content_html: v.optional(v.string()),
+    content_json: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_user_created', ['user_id', 'created_at'])
+    .index('by_user_updated', ['user_id', 'updated_at']),
 })

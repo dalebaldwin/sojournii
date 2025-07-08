@@ -1,7 +1,8 @@
 import { cn } from '@/lib/utils'
+import { JSONContent } from '@tiptap/react'
 
 interface TiptapRendererProps {
-  content?: string
+  content?: string | JSONContent
   className?: string
   fallback?: string
 }
@@ -21,19 +22,50 @@ const convertPlainTextToHTML = (plainText: string): string => {
   return htmlContent
 }
 
+// Utility function to extract plain text from JSONContent
+const extractTextFromJSONContent = (jsonContent: JSONContent): string => {
+  if (!jsonContent) return ''
+
+  if (jsonContent.type === 'text') {
+    return jsonContent.text || ''
+  }
+
+  if (jsonContent.content && Array.isArray(jsonContent.content)) {
+    return jsonContent.content
+      .map(node => extractTextFromJSONContent(node))
+      .join('')
+  }
+
+  return ''
+}
+
 export function TiptapRenderer({
   content,
   className,
   fallback = '',
 }: TiptapRendererProps) {
+  let htmlContent = ''
+
+  // Handle different content types
+  if (content) {
+    if (typeof content === 'string') {
+      htmlContent = content
+    } else if (typeof content === 'object') {
+      // For JSONContent, we need to convert it to HTML or extract text
+      // For now, extract plain text and convert to HTML
+      const plainText = extractTextFromJSONContent(content)
+      htmlContent = convertPlainTextToHTML(plainText)
+    }
+  }
+
   // If no content, try to convert fallback to HTML
-  if (!content || content.trim() === '') {
+  if (!htmlContent || htmlContent.trim() === '') {
     if (!fallback || fallback.trim() === '') {
       return null
     }
 
     // Convert plain text fallback to HTML for better formatting
-    const htmlContent = convertPlainTextToHTML(fallback)
+    htmlContent = convertPlainTextToHTML(fallback)
     if (htmlContent) {
       // Render converted HTML with proper styling
       return (
@@ -76,7 +108,7 @@ export function TiptapRenderer({
         'prose-strong:font-semibold',
         className
       )}
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   )
 }

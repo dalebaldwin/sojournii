@@ -14,6 +14,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  NotebookPen,
   Settings,
   Target,
   User,
@@ -62,6 +63,7 @@ export function Sidebar() {
   const contentItems = [
     { href: '/my/work-hours', label: 'Work Hours', icon: Clock4 },
     { href: '/my/goals', label: 'Goals', icon: Target },
+    { href: '/my/notes', label: 'Notes', icon: NotebookPen },
   ]
 
   const userMenuItems = [
