@@ -6,8 +6,9 @@ import { cn } from '@/lib/utils'
 import { SignOutButton, useUser } from '@clerk/nextjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  ChartNoAxesGantt,
+  CheckSquare,
   ChevronDown,
-  Clock,
   Clock4,
   HelpCircle,
   LayoutDashboard,
@@ -57,11 +58,12 @@ export function Sidebar() {
 
   const overviewItems = [
     { href: '/my', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/my/timeline', label: 'Timeline', icon: Clock },
+    { href: '/my/timeline', label: 'Timeline', icon: ChartNoAxesGantt },
   ]
 
   const contentItems = [
     { href: '/my/work-hours', label: 'Work Hours', icon: Clock4 },
+    { href: '/my/tasks', label: 'Tasks', icon: CheckSquare },
     { href: '/my/goals', label: 'Goals', icon: Target },
     { href: '/my/notes', label: 'Notes', icon: NotebookPen },
   ]

@@ -201,4 +201,26 @@ export default defineSchema({
     .index('by_user', ['user_id'])
     .index('by_user_created', ['user_id', 'created_at'])
     .index('by_user_updated', ['user_id', 'updated_at']),
+
+  tasks: defineTable({
+    user_id: v.string(),
+    title: v.string(),
+    description: v.string(),
+    due_date: v.optional(v.number()), // Unix timestamp
+    status: v.union(
+      v.literal('pending'),
+      v.literal('in_progress'),
+      v.literal('completed'),
+      v.literal('cancelled')
+    ),
+    completion_date: v.optional(v.number()), // Unix timestamp when task was completed
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_status', ['status'])
+    .index('by_user_status', ['user_id', 'status'])
+    .index('by_due_date', ['due_date'])
+    .index('by_user_due_date', ['user_id', 'due_date'])
+    .index('by_completion_date', ['completion_date']),
 })

@@ -70,7 +70,7 @@ export default function TimelinePage() {
       <div className='mx-auto max-w-4xl p-6'>
         {/* Header */}
         <div className='mb-8'>
-          <Heading level='h1' weight='bold' className='mb-2'>
+          <Heading level='h1' weight='bold' className='mb-2' showLines>
             Timeline
           </Heading>
           <p className='text-muted-foreground text-lg'>
