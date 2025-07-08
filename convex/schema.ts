@@ -223,4 +223,33 @@ export default defineSchema({
     .index('by_due_date', ['due_date'])
     .index('by_user_due_date', ['user_id', 'due_date'])
     .index('by_completion_date', ['completion_date']),
+
+  retros: defineTable({
+    user_id: v.string(),
+    week_start_date: v.string(), // YYYY-MM-DD format for the start of the week
+    week_end_date: v.string(), // YYYY-MM-DD format for the end of the week
+    // Slider values (0-100)
+    general_feelings: v.number(),
+    work_relationships: v.number(),
+    professional_growth: v.number(),
+    productivity: v.number(),
+    personal_wellbeing: v.number(),
+    // Text content using TipTap
+    positive_outcomes: v.string(),
+    positive_outcomes_html: v.optional(v.string()),
+    positive_outcomes_json: v.optional(v.string()),
+    negative_outcomes: v.string(),
+    negative_outcomes_html: v.optional(v.string()),
+    negative_outcomes_json: v.optional(v.string()),
+    key_takeaways: v.string(),
+    key_takeaways_html: v.optional(v.string()),
+    key_takeaways_json: v.optional(v.string()),
+    completed_at: v.optional(v.number()), // Unix timestamp when retro was completed
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_user_week', ['user_id', 'week_start_date'])
+    .index('by_week_start', ['week_start_date'])
+    .index('by_completed', ['completed_at']),
 })
