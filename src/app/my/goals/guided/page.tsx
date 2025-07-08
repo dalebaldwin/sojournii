@@ -132,9 +132,7 @@ export default function GuidedGoalsPage() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {currentStep === 'intro' && (
-                <IntroSection nextStep={nextStep} user={user} />
-              )}
+              {currentStep === 'intro' && <IntroSection nextStep={nextStep} />}
 
               {currentStep === 'details' && (
                 <GoalDetailsSection

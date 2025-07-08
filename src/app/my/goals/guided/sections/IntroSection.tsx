@@ -1,14 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
-import { ClerkUser } from '@/lib/types'
 import { CheckCircle, Target, TrendingUp } from 'lucide-react'
 
 interface IntroSectionProps {
-  user: ClerkUser
   nextStep: () => void
 }
 
-export function IntroSection({ user, nextStep }: IntroSectionProps) {
+export function IntroSection({ nextStep }: IntroSectionProps) {
   return (
     <div className='mx-auto w-full max-w-2xl text-center'>
       <Heading level='h1' weight='normal' className='mb-6' showLines>

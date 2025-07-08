@@ -52,6 +52,12 @@ export const createAccountSettings = mutation({
     ),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
+    work_start_hour: v.optional(v.number()),
+    work_start_minute: v.optional(v.number()),
+    work_start_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    work_end_hour: v.optional(v.number()),
+    work_end_minute: v.optional(v.number()),
+    work_end_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
     default_work_from_home: v.optional(v.boolean()),
     break_hours: v.optional(v.number()),
     break_minutes: v.optional(v.number()),
@@ -99,6 +105,12 @@ export const createAccountSettings = mutation({
       perf_questions: args.perf_questions,
       work_hours: args.work_hours,
       work_minutes: args.work_minutes,
+      work_start_hour: args.work_start_hour,
+      work_start_minute: args.work_start_minute,
+      work_start_am_pm: args.work_start_am_pm,
+      work_end_hour: args.work_end_hour,
+      work_end_minute: args.work_end_minute,
+      work_end_am_pm: args.work_end_am_pm,
       default_work_from_home: args.default_work_from_home,
       break_hours: args.break_hours,
       break_minutes: args.break_minutes,
@@ -156,6 +168,12 @@ export const updateAccountSettings = mutation({
     ),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
+    work_start_hour: v.optional(v.number()),
+    work_start_minute: v.optional(v.number()),
+    work_start_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    work_end_hour: v.optional(v.number()),
+    work_end_minute: v.optional(v.number()),
+    work_end_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
     default_work_from_home: v.optional(v.boolean()),
     break_hours: v.optional(v.number()),
     break_minutes: v.optional(v.number()),
@@ -213,6 +231,12 @@ export const updateAccountSettings = mutation({
       }>
       work_hours?: number
       work_minutes?: number
+      work_start_hour?: number
+      work_start_minute?: number
+      work_start_am_pm?: 'AM' | 'PM'
+      work_end_hour?: number
+      work_end_minute?: number
+      work_end_am_pm?: 'AM' | 'PM'
       default_work_from_home?: boolean
       break_hours?: number
       break_minutes?: number
@@ -251,6 +275,18 @@ export const updateAccountSettings = mutation({
     if (args.work_hours !== undefined) updateData.work_hours = args.work_hours
     if (args.work_minutes !== undefined)
       updateData.work_minutes = args.work_minutes
+    if (args.work_start_hour !== undefined)
+      updateData.work_start_hour = args.work_start_hour
+    if (args.work_start_minute !== undefined)
+      updateData.work_start_minute = args.work_start_minute
+    if (args.work_start_am_pm !== undefined)
+      updateData.work_start_am_pm = args.work_start_am_pm
+    if (args.work_end_hour !== undefined)
+      updateData.work_end_hour = args.work_end_hour
+    if (args.work_end_minute !== undefined)
+      updateData.work_end_minute = args.work_end_minute
+    if (args.work_end_am_pm !== undefined)
+      updateData.work_end_am_pm = args.work_end_am_pm
     if (args.default_work_from_home !== undefined)
       updateData.default_work_from_home = args.default_work_from_home
     if (args.break_hours !== undefined)

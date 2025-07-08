@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronDown,
   Clock,
+  Clock4,
   HelpCircle,
   LayoutDashboard,
   LogOut,
@@ -58,7 +59,10 @@ export function Sidebar() {
     { href: '/my/timeline', label: 'Timeline', icon: Clock },
   ]
 
-  const contentItems = [{ href: '/my/goals', label: 'Goals', icon: Target }]
+  const contentItems = [
+    { href: '/my/work-hours', label: 'Work Hours', icon: Clock4 },
+    { href: '/my/goals', label: 'Goals', icon: Target },
+  ]
 
   const userMenuItems = [
     { href: '/my/accounts', label: 'Account', icon: User },

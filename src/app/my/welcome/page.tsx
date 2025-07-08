@@ -52,8 +52,14 @@ export default function WelcomePage() {
     weekly_reminder_minute: 30,
     weekly_reminder_am_pm: initial12Hour.amPm,
     performanceQuestions: defaultPerformanceQuestions,
-    work_hours: 38,
-    work_minutes: 0,
+    work_hours: 37,
+    work_minutes: 30,
+    work_start_hour: 9,
+    work_start_minute: 0,
+    work_start_am_pm: 'AM',
+    work_end_hour: 5,
+    work_end_minute: 0,
+    work_end_am_pm: 'PM',
     default_work_from_home: false,
     break_hours: 0,
     break_minutes: 30,
@@ -183,6 +189,16 @@ export default function WelcomePage() {
         welcomeData.weekly_reminder_am_pm
       )
 
+      const workStartHour24 = convertTo24Hour(
+        welcomeData.work_start_hour,
+        welcomeData.work_start_am_pm
+      )
+
+      const workEndHour24 = convertTo24Hour(
+        welcomeData.work_end_hour,
+        welcomeData.work_end_am_pm
+      )
+
       // Filter and format employers to ensure required fields are present
       const validEmployers = welcomeData.employers
         ?.filter(
@@ -217,6 +233,12 @@ export default function WelcomePage() {
         perf_questions: welcomeData.performanceQuestions,
         work_hours: welcomeData.work_hours,
         work_minutes: welcomeData.work_minutes,
+        work_start_hour: workStartHour24,
+        work_start_minute: welcomeData.work_start_minute,
+        work_start_am_pm: welcomeData.work_start_am_pm,
+        work_end_hour: workEndHour24,
+        work_end_minute: welcomeData.work_end_minute,
+        work_end_am_pm: welcomeData.work_end_am_pm,
         default_work_from_home: welcomeData.default_work_from_home,
         break_hours: welcomeData.break_hours,
         break_minutes: welcomeData.break_minutes,

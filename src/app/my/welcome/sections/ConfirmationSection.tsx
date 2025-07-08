@@ -77,6 +77,14 @@ export function ConfirmationSection({
               {welcomeData.work_hours}h {welcomeData.work_minutes}m
             </p>
             <p className='text-sm'>
+              <span className='text-muted-foreground'>Work Schedule:</span>{' '}
+              {welcomeData.work_start_hour}:
+              {welcomeData.work_start_minute.toString().padStart(2, '0')}{' '}
+              {welcomeData.work_start_am_pm} - {welcomeData.work_end_hour}:
+              {welcomeData.work_end_minute.toString().padStart(2, '0')}{' '}
+              {welcomeData.work_end_am_pm}
+            </p>
+            <p className='text-sm'>
               <span className='text-muted-foreground'>
                 Default Work Location:
               </span>{' '}

@@ -71,6 +71,12 @@ export interface WelcomeData {
   performanceQuestions: PerformanceQuestion[]
   work_hours: number
   work_minutes: number
+  work_start_hour: number
+  work_start_minute: number
+  work_start_am_pm: 'AM' | 'PM'
+  work_end_hour: number
+  work_end_minute: number
+  work_end_am_pm: 'AM' | 'PM'
   default_work_from_home: boolean
   break_hours: number
   break_minutes: number

@@ -21,6 +21,12 @@ import {
   isSameDay,
   isValidDate,
   timestampToDate,
+  getCurrentWeek,
+  getWeekDaysInfo,
+  formatDateForDB,
+  formatDateForDisplay,
+  formatWeekRange,
+  isDateEditable,
 } from './time-functions.ts'
 
 describe('Time Conversion Functions', () => {
@@ -374,6 +380,172 @@ describe('Timezone-Aware Date Functions', () => {
       
       assert.strictEqual(typeof springFormatted, 'string')
       assert.strictEqual(typeof fallFormatted, 'string')
+    })
+  })
+})
+
+describe('Week Calculation Functions', () => {
+  describe('getCurrentWeek', () => {
+    test('returns correct week for Monday', () => {
+      // Test with Monday, January 8, 2024
+      const monday = new Date('2024-01-08T10:00:00')
+      const week = getCurrentWeek(monday)
+      
+      // Should start on the same Monday
+      assert.strictEqual(formatDateForDB(week.startDate), '2024-01-08')
+      // Should end on Sunday, January 14, 2024
+      assert.strictEqual(formatDateForDB(week.endDate), '2024-01-14')
+      // Should have 7 days
+      assert.strictEqual(week.weekDays.length, 7)
+    })
+
+    test('returns correct week for Sunday', () => {
+      // Test with Sunday, January 14, 2024
+      const sunday = new Date('2024-01-14T10:00:00')
+      const week = getCurrentWeek(sunday)
+      
+      // Should start on Monday, January 8, 2024
+      assert.strictEqual(formatDateForDB(week.startDate), '2024-01-08')
+      // Should end on the same Sunday
+      assert.strictEqual(formatDateForDB(week.endDate), '2024-01-14')
+    })
+
+    test('returns correct week for Wednesday (mid-week)', () => {
+      // Test with Wednesday, January 10, 2024
+      const wednesday = new Date('2024-01-10T10:00:00')
+      const week = getCurrentWeek(wednesday)
+      
+      // Should start on Monday, January 8, 2024
+      assert.strictEqual(formatDateForDB(week.startDate), '2024-01-08')
+      // Should end on Sunday, January 14, 2024
+      assert.strictEqual(formatDateForDB(week.endDate), '2024-01-14')
+    })
+
+    test('week days are in correct order', () => {
+      const monday = new Date('2024-01-08T10:00:00')
+      const week = getCurrentWeek(monday)
+      
+      // Check that all days are consecutive and start with Monday
+      const expectedDates = [
+        '2024-01-08', // Monday
+        '2024-01-09', // Tuesday
+        '2024-01-10', // Wednesday
+        '2024-01-11', // Thursday
+        '2024-01-12', // Friday
+        '2024-01-13', // Saturday
+        '2024-01-14', // Sunday
+      ]
+      
+      week.weekDays.forEach((day, index) => {
+        assert.strictEqual(formatDateForDB(day), expectedDates[index])
+      })
+    })
+  })
+
+  describe('getWeekDaysInfo', () => {
+    test('returns correct day information', () => {
+      // Test with a known date: Wednesday, January 10, 2024
+      const wednesday = new Date('2024-01-10T10:00:00')
+      const daysInfo = getWeekDaysInfo(wednesday)
+      
+      assert.strictEqual(daysInfo.length, 7)
+      
+      // Check Monday (first day)
+      assert.strictEqual(daysInfo[0].dayName, 'Monday')
+      assert.strictEqual(daysInfo[0].dayNameShort, 'Mon')
+      assert.strictEqual(daysInfo[0].dateString, '2024-01-08')
+      
+      // Check Sunday (last day)
+      assert.strictEqual(daysInfo[6].dayName, 'Sunday')
+      assert.strictEqual(daysInfo[6].dayNameShort, 'Sun')
+      assert.strictEqual(daysInfo[6].dateString, '2024-01-14')
+    })
+
+    test('correctly identifies past, present, and future days', () => {
+      // Create a mock "today" by using a specific date
+      const today = new Date('2024-01-10T10:00:00') // Wednesday
+      
+      // Mock the current date for testing
+      const originalDate = Date.now
+      global.Date.now = () => today.getTime()
+      global.Date = class extends Date {
+        constructor(...args) {
+          if (args.length === 0) {
+            super(today.getTime())
+          } else {
+            super(...args)
+          }
+        }
+        static now() {
+          return today.getTime()
+        }
+      }
+      
+      try {
+        const testDaysInfo = getWeekDaysInfo(today)
+        
+        // Monday and Tuesday should be past
+        assert.strictEqual(testDaysInfo[0].isPast, true) // Monday
+        assert.strictEqual(testDaysInfo[1].isPast, true) // Tuesday
+        
+        // Wednesday should be today
+        assert.strictEqual(testDaysInfo[2].isToday, true) // Wednesday
+        
+        // Thursday through Sunday should be future
+        assert.strictEqual(testDaysInfo[3].isFuture, true) // Thursday
+        assert.strictEqual(testDaysInfo[6].isFuture, true) // Sunday
+      } finally {
+        // Restore original Date
+        global.Date = originalDate
+      }
+    })
+  })
+
+  describe('formatDateForDB', () => {
+    test('formats date correctly for database storage', () => {
+      const date = new Date('2024-01-08T10:30:00')
+      assert.strictEqual(formatDateForDB(date), '2024-01-08')
+    })
+
+    test('handles single digit months and days', () => {
+      const date = new Date('2024-03-05T10:30:00')
+      assert.strictEqual(formatDateForDB(date), '2024-03-05')
+    })
+  })
+
+  describe('formatDateForDisplay', () => {
+    test('formats date for display', () => {
+      const date = new Date('2024-01-08T10:30:00')
+      const formatted = formatDateForDisplay(date)
+      assert.strictEqual(formatted, 'Jan 8')
+    })
+  })
+
+  describe('formatWeekRange', () => {
+    test('formats week range correctly', () => {
+      const startDate = new Date('2024-01-08T00:00:00')
+      const endDate = new Date('2024-01-14T23:59:59')
+      const formatted = formatWeekRange(startDate, endDate)
+      assert.strictEqual(formatted, 'Jan 8 - Jan 14, 2024')
+    })
+  })
+
+  describe('isDateEditable', () => {
+    test('returns true for past dates', () => {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      assert.strictEqual(isDateEditable(yesterday), true)
+    })
+
+    test('returns true for today', () => {
+      const today = new Date()
+      assert.strictEqual(isDateEditable(today), true)
+    })
+
+    test('returns false for future dates', () => {
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      assert.strictEqual(isDateEditable(tomorrow), false)
     })
   })
 })

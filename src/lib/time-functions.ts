@@ -403,3 +403,167 @@ export const convertSelectedDateToTimestamp = (
     return selectedDate.getTime()
   }
 }
+
+// =============================================================================
+// WEEK CALCULATION FUNCTIONS
+// =============================================================================
+
+export interface WeekInfo {
+  startDate: Date
+  endDate: Date
+  weekDays: Date[]
+}
+
+export interface DayInfo {
+  date: Date
+  dayName: string
+  dayNameShort: string
+  dateString: string // YYYY-MM-DD format
+  isPast: boolean
+  isToday: boolean
+  isFuture: boolean
+}
+
+/**
+ * Get the current week starting from Monday
+ * @param referenceDate - Date to calculate week from (defaults to today)
+ * @returns WeekInfo object with start date, end date, and all days
+ */
+export const getCurrentWeek = (referenceDate: Date = new Date()): WeekInfo => {
+  const date = new Date(referenceDate)
+
+  // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+  const dayOfWeek = date.getDay()
+
+  // Calculate how many days to subtract to get to Monday
+  // If it's Sunday (0), we need to go back 6 days to get to Monday
+  // If it's Monday (1), we need to go back 0 days
+  // If it's Tuesday (2), we need to go back 1 day, etc.
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+
+  // Get Monday of this week
+  const startDate = new Date(date)
+  startDate.setDate(date.getDate() - daysToSubtract)
+  startDate.setHours(0, 0, 0, 0)
+
+  // Get Sunday of this week (6 days after Monday)
+  const endDate = new Date(startDate)
+  endDate.setDate(startDate.getDate() + 6)
+  endDate.setHours(23, 59, 59, 999)
+
+  // Generate all 7 days of the week
+  const weekDays: Date[] = []
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(startDate)
+    day.setDate(startDate.getDate() + i)
+    weekDays.push(day)
+  }
+
+  return {
+    startDate,
+    endDate,
+    weekDays,
+  }
+}
+
+/**
+ * Get detailed information for each day in the current week
+ * @param referenceDate - Date to calculate week from (defaults to today)
+ * @returns Array of DayInfo objects for each day of the week
+ */
+export const getWeekDaysInfo = (
+  referenceDate: Date = new Date()
+): DayInfo[] => {
+  const week = getCurrentWeek(referenceDate)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const dayNames = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ]
+  const dayNamesShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+  return week.weekDays.map((day, index) => {
+    const dayDate = new Date(day)
+    dayDate.setHours(0, 0, 0, 0)
+
+    const todayDate = new Date(today)
+    todayDate.setHours(0, 0, 0, 0)
+
+    return {
+      date: day,
+      dayName: dayNames[index],
+      dayNameShort: dayNamesShort[index],
+      dateString: formatDateForDB(day),
+      isPast: dayDate < todayDate,
+      isToday: dayDate.getTime() === todayDate.getTime(),
+      isFuture: dayDate > todayDate,
+    }
+  })
+}
+
+/**
+ * Format date for database storage (YYYY-MM-DD)
+ * @param date - Date to format
+ * @returns Date string in YYYY-MM-DD format
+ */
+export const formatDateForDB = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
+ * Format date for display (e.g., "Dec 16")
+ * @param date - Date to format
+ * @returns Formatted date string
+ */
+export const formatDateForDisplay = (date: Date): string => {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+/**
+ * Format week range for display (e.g., "Dec 16 - Dec 22, 2024")
+ * @param startDate - Start of week
+ * @param endDate - End of week
+ * @returns Formatted week range string
+ */
+export const formatWeekRange = (startDate: Date, endDate: Date): string => {
+  const start = startDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  })
+
+  const end = endDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+  return `${start} - ${end}`
+}
+
+/**
+ * Check if a date is editable (not in the future)
+ * @param date - Date to check
+ * @returns True if date is today or in the past
+ */
+export const isDateEditable = (date: Date): boolean => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const checkDate = new Date(date)
+  checkDate.setHours(0, 0, 0, 0)
+
+  return checkDate <= today
+}

@@ -197,7 +197,7 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
     try {
       const milestoneData = editingMilestoneData[milestoneId]
       await updateMilestone({
-        milestoneId: milestoneId,
+        milestoneId: milestoneId as Id<'goal_milestones'>,
         name: milestoneData.name,
         description: milestoneData.description,
         description_html: milestoneData.description_html,
@@ -263,7 +263,7 @@ export default function GoalDetailsPage({ params }: GoalDetailsPageProps) {
   const handleDeleteMilestone = async (milestoneId: string) => {
     try {
       await deleteMilestone({
-        milestoneId: milestoneId,
+        milestoneId: milestoneId as Id<'goal_milestones'>,
       })
     } catch (error) {
       console.error('Error deleting milestone:', error)

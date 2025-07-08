@@ -23,6 +23,12 @@ export default defineSchema({
     weekly_reminder_time_zone: v.string(),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
+    work_start_hour: v.optional(v.number()),
+    work_start_minute: v.optional(v.number()),
+    work_start_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    work_end_hour: v.optional(v.number()),
+    work_end_minute: v.optional(v.number()),
+    work_end_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
     default_work_from_home: v.optional(v.boolean()),
     break_hours: v.optional(v.number()),
     break_minutes: v.optional(v.number()),
@@ -99,6 +105,51 @@ export default defineSchema({
     .index('by_goal_order', ['goal_id', 'order'])
     .index('by_status', ['status'])
     .index('by_user_status', ['user_id', 'status']),
+
+  work_hour_entries: defineTable({
+    user_id: v.string(),
+    date: v.string(), // YYYY-MM-DD format
+    work_hours: v.number(),
+    work_minutes: v.number(),
+    work_start_hour: v.optional(v.number()),
+    work_start_minute: v.optional(v.number()),
+    work_start_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    work_end_hour: v.optional(v.number()),
+    work_end_minute: v.optional(v.number()),
+    work_end_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    // Hybrid work support - separate home and office times
+    work_home_start_hour: v.optional(v.number()),
+    work_home_start_minute: v.optional(v.number()),
+    work_home_start_am_pm: v.optional(
+      v.union(v.literal('AM'), v.literal('PM'))
+    ),
+    work_home_end_hour: v.optional(v.number()),
+    work_home_end_minute: v.optional(v.number()),
+    work_home_end_am_pm: v.optional(v.union(v.literal('AM'), v.literal('PM'))),
+    work_office_start_hour: v.optional(v.number()),
+    work_office_start_minute: v.optional(v.number()),
+    work_office_start_am_pm: v.optional(
+      v.union(v.literal('AM'), v.literal('PM'))
+    ),
+    work_office_end_hour: v.optional(v.number()),
+    work_office_end_minute: v.optional(v.number()),
+    work_office_end_am_pm: v.optional(
+      v.union(v.literal('AM'), v.literal('PM'))
+    ),
+    work_location: v.optional(
+      v.union(v.literal('home'), v.literal('office'), v.literal('hybrid'))
+    ),
+    // Keep work_from_home for backward compatibility
+    work_from_home: v.optional(v.boolean()),
+    break_hours: v.optional(v.number()),
+    break_minutes: v.optional(v.number()),
+    notes: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_date', ['date'])
+    .index('by_user_date', ['user_id', 'date']),
 
   timeline_events: defineTable({
     user_id: v.string(),

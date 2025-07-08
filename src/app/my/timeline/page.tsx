@@ -1,7 +1,6 @@
 'use client'
 
 import { Heading } from '@/components/ui/heading'
-import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
 import {
   TIMELINE_EVENT_COLORS,
@@ -121,15 +120,7 @@ export default function TimelinePage() {
 
                     {event.description && (
                       <div className='text-muted-foreground text-sm'>
-                        {event.description_html ? (
-                          <TiptapRenderer
-                            content={event.description_html}
-                            fallback={event.description}
-                            className='prose-sm'
-                          />
-                        ) : (
-                          event.description
-                        )}
+                        {event.description}
                       </div>
                     )}
 
