@@ -102,7 +102,6 @@ export const createAccountSettings = mutation({
       weekly_reminder_minute: args.weekly_reminder_minute,
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
-      perf_questions: args.perf_questions,
       work_hours: args.work_hours,
       work_minutes: args.work_minutes,
       work_start_hour: args.work_start_hour,
@@ -118,6 +117,24 @@ export const createAccountSettings = mutation({
       created_at: now,
       updated_at: now,
     })
+
+    // Create performance questions if provided
+    if (args.perf_questions && args.perf_questions.length > 0) {
+      for (let i = 0; i < args.perf_questions.length; i++) {
+        const question = args.perf_questions[i]
+        await ctx.db.insert('performance_questions', {
+          user_id: userId,
+          title: question.title,
+          description: question.description,
+          description_html: question.description_html,
+          description_json: question.description_json,
+          order: i + 1,
+          is_active: true,
+          created_at: now,
+          updated_at: now,
+        })
+      }
+    }
 
     // If onboarding is completed, create the "Joined Sojournii" milestone
     if (args.onboarding_completed === true) {
@@ -156,16 +173,6 @@ export const updateAccountSettings = mutation({
       )
     ),
     weekly_reminder_time_zone: v.optional(v.string()),
-    perf_questions: v.optional(
-      v.array(
-        v.object({
-          title: v.string(),
-          description: v.string(),
-          description_html: v.optional(v.string()),
-          description_json: v.optional(v.string()),
-        })
-      )
-    ),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
     work_start_hour: v.optional(v.number()),
@@ -223,12 +230,6 @@ export const updateAccountSettings = mutation({
         | 'saturday'
         | 'sunday'
       weekly_reminder_time_zone?: string
-      perf_questions?: Array<{
-        title: string
-        description: string
-        description_html?: string
-        description_json?: string
-      }>
       work_hours?: number
       work_minutes?: number
       work_start_hour?: number
@@ -270,8 +271,6 @@ export const updateAccountSettings = mutation({
       updateData.weekly_reminder_day = args.weekly_reminder_day
     if (args.weekly_reminder_time_zone !== undefined)
       updateData.weekly_reminder_time_zone = args.weekly_reminder_time_zone
-    if (args.perf_questions !== undefined)
-      updateData.perf_questions = args.perf_questions
     if (args.work_hours !== undefined) updateData.work_hours = args.work_hours
     if (args.work_minutes !== undefined)
       updateData.work_minutes = args.work_minutes

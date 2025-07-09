@@ -47,16 +47,6 @@ export default defineSchema({
     ),
     created_at: v.number(),
     updated_at: v.number(),
-    perf_questions: v.optional(
-      v.array(
-        v.object({
-          title: v.string(),
-          description: v.string(),
-          description_html: v.optional(v.string()),
-          description_json: v.optional(v.string()),
-        })
-      )
-    ),
   })
     .index('by_token', ['tokenIdentifier'])
     .index('by_user', ['user_id'])
@@ -252,4 +242,40 @@ export default defineSchema({
     .index('by_user_week', ['user_id', 'week_start_date'])
     .index('by_week_start', ['week_start_date'])
     .index('by_completed', ['completed_at']),
+
+  performance_questions: defineTable({
+    user_id: v.string(),
+    title: v.string(),
+    description: v.string(),
+    description_html: v.optional(v.string()),
+    description_json: v.optional(v.string()),
+    order: v.number(), // Display order
+    is_active: v.boolean(), // Allow users to disable questions
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_user_order', ['user_id', 'order'])
+    .index('by_user_active', ['user_id', 'is_active']),
+
+  performance_responses: defineTable({
+    user_id: v.string(),
+    question_id: v.id('performance_questions'),
+    week_start_date: v.string(), // YYYY-MM-DD format for the start of the week
+    response: v.string(), // Plain text response/note
+    response_html: v.optional(v.string()),
+    response_json: v.optional(v.string()),
+    created_at: v.number(),
+    updated_at: v.number(),
+  })
+    .index('by_user', ['user_id'])
+    .index('by_question', ['question_id'])
+    .index('by_user_week', ['user_id', 'week_start_date'])
+    .index('by_question_week', ['question_id', 'week_start_date'])
+    .index('by_user_question', ['user_id', 'question_id'])
+    .index('by_user_question_week', [
+      'user_id',
+      'question_id',
+      'week_start_date',
+    ]),
 })

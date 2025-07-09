@@ -4,7 +4,6 @@ import { OnboardingGuard } from '@/components/auth/OnboardingGuard'
 import { Heading } from '@/components/ui/heading'
 import { useAccountSettings } from '@/hooks/useAccountSettings'
 import { NotificationSettingsSection } from './sections/NotificationSettingsSection'
-import { PerformanceQuestionsSection } from './sections/PerformanceQuestionsSection'
 import { WorkHoursSection } from './sections/WorkHoursSection'
 
 export default function SettingsPage() {
@@ -25,7 +24,6 @@ export default function SettingsPage() {
         <div className='space-y-6'>
           <NotificationSettingsSection accountSettings={accountSettings} />
           <WorkHoursSection accountSettings={accountSettings} />
-          <PerformanceQuestionsSection accountSettings={accountSettings} />
         </div>
       </div>
     </OnboardingGuard>

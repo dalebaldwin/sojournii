@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Settings,
   Target,
+  TrendingUp,
   User,
   X,
 } from 'lucide-react'
@@ -65,6 +66,7 @@ export function Sidebar() {
   const contentItems = [
     { href: '/my/work-hours', label: 'Work Hours', icon: Clock4 },
     { href: '/my/tasks', label: 'Tasks', icon: CheckSquare },
+    { href: '/my/performance', label: 'Performance', icon: TrendingUp },
     { href: '/my/retro', label: 'Retro', icon: RotateCcw },
     { href: '/my/goals', label: 'Goals', icon: Target },
     { href: '/my/notes', label: 'Notes', icon: NotebookPen },

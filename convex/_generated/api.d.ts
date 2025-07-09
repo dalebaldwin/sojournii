@@ -18,6 +18,8 @@ import type * as goals from "../goals.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as milestones from "../milestones.js";
 import type * as notes from "../notes.js";
+import type * as performanceQuestions from "../performanceQuestions.js";
+import type * as performanceResponses from "../performanceResponses.js";
 import type * as retros from "../retros.js";
 import type * as tasks from "../tasks.js";
 import type * as timeline from "../timeline.js";
@@ -37,6 +39,8 @@ declare const fullApi: ApiFromModules<{
   "lib/auth": typeof lib_auth;
   milestones: typeof milestones;
   notes: typeof notes;
+  performanceQuestions: typeof performanceQuestions;
+  performanceResponses: typeof performanceResponses;
   retros: typeof retros;
   tasks: typeof tasks;
   timeline: typeof timeline;

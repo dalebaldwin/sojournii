@@ -22,7 +22,6 @@ import { useEffect, useState } from 'react'
 import { ConfirmationSection } from './sections/ConfirmationSection'
 import { EmailSection } from './sections/EmailSection'
 import { EmployerSection } from './sections/EmployerSection'
-import { PerformanceQuestionsSection } from './sections/PerformanceQuestionsSection'
 import { ReadySection } from './sections/ReadySection'
 import { RemindersSection } from './sections/RemindersSection'
 import { TimezoneSection } from './sections/TimezoneSection'
@@ -134,7 +133,6 @@ export default function WelcomePage() {
     'email',
     'workHours',
     'employer',
-    'performanceQuestions',
     'confirmation',
     'ready',
   ]
@@ -230,7 +228,6 @@ export default function WelcomePage() {
         weekly_reminder_minute: welcomeData.weekly_reminder_minute,
         weekly_reminder_day: welcomeData.weekly_reminder_day,
         weekly_reminder_time_zone: welcomeData.timezone,
-        perf_questions: welcomeData.performanceQuestions,
         work_hours: welcomeData.work_hours,
         work_minutes: welcomeData.work_minutes,
         work_start_hour: workStartHour24,
@@ -375,14 +372,6 @@ export default function WelcomePage() {
                 <EmployerSection
                   welcomeData={welcomeData}
                   setWelcomeData={setWelcomeData}
-                  nextStep={nextStep}
-                  prevStep={prevStep}
-                />
-              )}
-
-              {currentStep === 'performanceQuestions' && (
-                <PerformanceQuestionsSection
-                  questions={welcomeData.performanceQuestions}
                   nextStep={nextStep}
                   prevStep={prevStep}
                 />
