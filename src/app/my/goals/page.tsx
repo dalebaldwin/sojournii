@@ -118,21 +118,13 @@ export default function GoalsPage() {
     <div className='bg-background min-h-screen'>
       <div className='mx-auto max-w-6xl p-6'>
         {/* Header */}
-        <div className='mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <Heading level='h1' weight='bold' className='mb-2' showLines>
-              Goals Dashboard
-            </Heading>
-            <p className='text-muted-foreground'>
-              Track your progress and achieve your aspirations
-            </p>
-          </div>
-          <Link href='/my/goals/guided'>
-            <Button size='lg' className='h-12 px-6'>
-              <Plus className='mr-2 h-5 w-5' />
-              Create New Goal
-            </Button>
-          </Link>
+        <div className='mb-8'>
+          <Heading level='h1' weight='bold' className='mb-2' showLines>
+            Goals Dashboard
+          </Heading>
+          <p className='text-muted-foreground'>
+            Track your progress and achieve your aspirations
+          </p>
         </div>
 
         {/* Dashboard Stats */}
@@ -183,6 +175,18 @@ export default function GoalsPage() {
             </div>
           </div>
         </div>
+
+        {/* Create New Goal Button - only show if user has goals */}
+        {goals && goals.length > 0 && (
+          <div className='mb-8 flex justify-center'>
+            <Link href='/my/goals/guided'>
+              <Button size='lg' className='h-12 px-6'>
+                <Plus className='mr-2 h-5 w-5' />
+                Create New Goal
+              </Button>
+            </Link>
+          </div>
+        )}
 
         {/* Empty State */}
         {(!goals || goals.length === 0) && (
