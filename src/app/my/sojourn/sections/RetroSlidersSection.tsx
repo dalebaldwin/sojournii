@@ -124,16 +124,7 @@ export function RetroSlidersSection({
     }
   }
 
-  // Auto-save when values change after a delay
-  useEffect(() => {
-    if (hasChanges) {
-      const timer = setTimeout(() => {
-        handleSave()
-      }, 2000) // Save after 2 seconds of no changes
-
-      return () => clearTimeout(timer)
-    }
-  }, [sliderValues, hasChanges])
+  // Save is handled on navigation only
 
   const handleNext = () => {
     if (hasChanges) {
@@ -143,6 +134,17 @@ export function RetroSlidersSection({
       })
     } else {
       nextStep()
+    }
+  }
+
+  const handlePrev = () => {
+    if (hasChanges) {
+      // Save before moving to previous step
+      handleSave().then(() => {
+        prevStep()
+      })
+    } else {
+      prevStep()
     }
   }
 
@@ -197,13 +199,13 @@ export function RetroSlidersSection({
       {hasChanges && (
         <div className='text-center'>
           <div className='text-sm text-orange-600 dark:text-orange-400'>
-            Changes will be saved automatically...
+            Changes will be saved when you continue...
           </div>
         </div>
       )}
 
       <div className='flex justify-between pt-8'>
-        <Button variant='outline' onClick={prevStep} size='lg'>
+        <Button variant='outline' onClick={handlePrev} size='lg'>
           Previous
         </Button>
         <Button onClick={handleNext} disabled={saving} size='lg'>

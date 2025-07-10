@@ -9,7 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { formatWeekRange, getCurrentWeek } from '@/lib/time-functions'
+import {
+  formatDateForDB,
+  formatWeekRange,
+  getCurrentWeek,
+} from '@/lib/time-functions'
 import { useState } from 'react'
 import { SojournData } from '../page'
 
@@ -38,10 +42,10 @@ export function WeekSelectionSection({
 
       const weekInfo = getCurrentWeek(weekDate)
       const weekOption = {
-        startDate: weekInfo.startDate.toISOString().split('T')[0],
-        endDate: weekInfo.endDate.toISOString().split('T')[0],
+        startDate: formatDateForDB(weekInfo.startDate),
+        endDate: formatDateForDB(weekInfo.endDate),
         weekRange: formatWeekRange(weekInfo.startDate, weekInfo.endDate),
-        value: weekInfo.startDate.toISOString().split('T')[0],
+        value: formatDateForDB(weekInfo.startDate),
       }
       weeks.push(weekOption)
     }

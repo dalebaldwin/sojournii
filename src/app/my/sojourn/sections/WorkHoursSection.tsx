@@ -5,8 +5,8 @@ import { Heading } from '@/components/ui/heading'
 import { WorkHourInlineForm } from '@/components/WorkHourInlineForm'
 import { useAccountSettings } from '@/hooks/useAccountSettings'
 import {
+  formatDateForDB,
   formatDateForDisplay,
-  getWeekDaysInfo,
   isDateEditable,
 } from '@/lib/time-functions'
 import { useQuery } from 'convex/react'
@@ -41,9 +41,49 @@ export function WorkHoursSection({
     endDate: selectedWeek.endDate,
   })
 
-  // Get week days info for the selected week
-  const selectedWeekStart = new Date(selectedWeek.startDate)
-  const weekDaysInfo = getWeekDaysInfo(selectedWeekStart)
+  // Create week days info directly from the selected week dates
+  const createWeekDaysFromSelectedWeek = () => {
+    const [startYear, startMonth, startDay] = selectedWeek.startDate
+      .split('-')
+      .map(Number)
+    const startDate = new Date(startYear, startMonth - 1, startDay)
+
+    const dayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ]
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const weekDays = []
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startDate)
+      day.setDate(startDate.getDate() + i)
+      day.setHours(0, 0, 0, 0)
+
+      const dayDate = new Date(day)
+      const todayDate = new Date(today)
+
+      weekDays.push({
+        date: day,
+        dayName: dayNames[i],
+        dayNameShort: dayNames[i].substring(0, 3),
+        dateString: formatDateForDB(day),
+        isPast: dayDate < todayDate,
+        isToday: dayDate.getTime() === todayDate.getTime(),
+        isFuture: dayDate > todayDate,
+      })
+    }
+
+    return weekDays
+  }
+
+  const weekDaysInfo = createWeekDaysFromSelectedWeek()
 
   // Create a map of date to work hour entry for quick lookup
   const workHourMap = new Map()

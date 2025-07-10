@@ -152,22 +152,7 @@ export function PerformanceSection({
     }
   }
 
-  // Auto-save when values change after a delay
-  useEffect(() => {
-    const timers: Record<string, NodeJS.Timeout> = {}
-
-    Object.keys(hasChanges).forEach(questionId => {
-      if (hasChanges[questionId]) {
-        timers[questionId] = setTimeout(() => {
-          handleSave(questionId)
-        }, 3000) // Save after 3 seconds of no changes
-      }
-    })
-
-    return () => {
-      Object.values(timers).forEach(timer => clearTimeout(timer))
-    }
-  }, [responseData, hasChanges])
+  // Save is handled on navigation only
 
   const handleNext = () => {
     // Save any pending changes before moving to next step
@@ -179,6 +164,19 @@ export function PerformanceSection({
       })
     } else {
       nextStep()
+    }
+  }
+
+  const handlePrev = () => {
+    // Save any pending changes before moving to previous step
+    const pendingChanges = Object.keys(hasChanges).filter(id => hasChanges[id])
+
+    if (pendingChanges.length > 0) {
+      Promise.all(pendingChanges.map(id => handleSave(id))).then(() => {
+        prevStep()
+      })
+    } else {
+      prevStep()
     }
   }
 
@@ -259,7 +257,7 @@ export function PerformanceSection({
                     <div className='text-sm text-orange-600 dark:text-orange-400'>
                       {isCurrentlySaving
                         ? 'Saving...'
-                        : 'Changes will be saved automatically...'}
+                        : 'Changes will be saved when you continue...'}
                     </div>
                   )}
                 </div>
@@ -270,7 +268,7 @@ export function PerformanceSection({
       )}
 
       <div className='flex justify-between'>
-        <Button variant='outline' onClick={prevStep}>
+        <Button variant='outline' onClick={handlePrev}>
           Previous
         </Button>
         <Button onClick={handleNext}>Next: Goal Progress</Button>

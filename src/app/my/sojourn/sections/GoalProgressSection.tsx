@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { TiptapEditor } from '@/components/ui/tiptap-editor'
+import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserGoals, useUserMilestones } from '@/hooks/useGoals'
 import { Goal } from '@/lib/types'
 import { Calendar, CheckCircle2, Circle, Clock, Target } from 'lucide-react'
@@ -148,9 +149,24 @@ export function GoalProgressSection({
                         {goal.name}
                       </h3>
                       {goal.description && (
-                        <p className='text-muted-foreground mt-1 text-sm'>
-                          {goal.description}
-                        </p>
+                        <div className='text-muted-foreground mt-1 text-sm'>
+                          {goal.description_json ? (
+                            <div className='prose prose-sm dark:prose-invert max-w-none'>
+                              <TiptapRenderer
+                                content={JSON.parse(goal.description_json)}
+                              />
+                            </div>
+                          ) : goal.description_html ? (
+                            <div
+                              className='prose prose-sm dark:prose-invert max-w-none'
+                              dangerouslySetInnerHTML={{
+                                __html: goal.description_html,
+                              }}
+                            />
+                          ) : (
+                            <p>{goal.description}</p>
+                          )}
+                        </div>
                       )}
                     </div>
                     {goal.target_date && (
@@ -213,9 +229,26 @@ export function GoalProgressSection({
                                     {milestone.name}
                                   </h5>
                                   {milestone.description && (
-                                    <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-                                      {milestone.description}
-                                    </p>
+                                    <div className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+                                      {milestone.description_json ? (
+                                        <div className='prose prose-sm dark:prose-invert max-w-none'>
+                                          <TiptapRenderer
+                                            content={JSON.parse(
+                                              milestone.description_json
+                                            )}
+                                          />
+                                        </div>
+                                      ) : milestone.description_html ? (
+                                        <div
+                                          className='prose prose-sm dark:prose-invert max-w-none'
+                                          dangerouslySetInnerHTML={{
+                                            __html: milestone.description_html,
+                                          }}
+                                        />
+                                      ) : (
+                                        <p>{milestone.description}</p>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
                                 {milestone.target_date && (

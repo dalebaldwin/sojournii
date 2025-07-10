@@ -137,16 +137,7 @@ export function RetroReflectionsSection({
     }
   }
 
-  // Auto-save when values change after a delay
-  useEffect(() => {
-    if (hasChanges) {
-      const timer = setTimeout(() => {
-        handleSave()
-      }, 3000) // Save after 3 seconds of no changes
-
-      return () => clearTimeout(timer)
-    }
-  }, [textValues, hasChanges])
+  // Save is handled on navigation only
 
   const handleNext = () => {
     if (hasChanges) {
@@ -156,6 +147,17 @@ export function RetroReflectionsSection({
       })
     } else {
       nextStep()
+    }
+  }
+
+  const handlePrev = () => {
+    if (hasChanges) {
+      // Save before moving to previous step
+      handleSave().then(() => {
+        prevStep()
+      })
+    } else {
+      prevStep()
     }
   }
 
@@ -199,13 +201,13 @@ export function RetroReflectionsSection({
       {hasChanges && (
         <div className='text-center'>
           <div className='text-sm text-orange-600 dark:text-orange-400'>
-            Changes will be saved automatically...
+            Changes will be saved when you continue...
           </div>
         </div>
       )}
 
       <div className='flex justify-between'>
-        <Button variant='outline' onClick={prevStep}>
+        <Button variant='outline' onClick={handlePrev}>
           Previous
         </Button>
         <Button onClick={handleNext} disabled={saving}>
