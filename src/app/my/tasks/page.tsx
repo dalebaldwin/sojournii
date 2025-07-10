@@ -2,8 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
-import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
+import { PageHeader } from '@/components/ui/page-header'
 import {
   Select,
   SelectContent,
@@ -179,14 +179,10 @@ export default function TasksPage() {
   return (
     <div className='mx-auto max-w-4xl space-y-6 p-6'>
       {/* Header */}
-      <div className='space-y-2'>
-        <Heading level='h1' weight='bold' className='mb-2' showLines>
-          Tasks
-        </Heading>
-        <p className='text-muted-foreground'>
-          Manage your tasks and track your productivity
-        </p>
-      </div>
+      <PageHeader
+        title='Tasks'
+        description='Manage your tasks and track your productivity'
+      />
 
       {/* Task Statistics Dashboard */}
       <div className='bg-muted/30 rounded-lg p-6'>

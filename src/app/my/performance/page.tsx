@@ -7,8 +7,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
+import { PageHeader } from '@/components/ui/page-header'
 import {
   Popover,
   PopoverContent,
@@ -257,14 +257,10 @@ export default function PerformancePage() {
   return (
     <div className='mx-auto max-w-5xl space-y-8 p-8'>
       {/* Header */}
-      <div className='space-y-4'>
-        <Heading level='h1' showLines>
-          Performance Tracking
-        </Heading>
-        <p className='text-muted-foreground'>
-          Track your progress and insights for each performance question
-        </p>
-
+      <PageHeader
+        title='Performance Tracking'
+        description='Track your progress and insights for each performance question'
+      >
         {/* Add New Question Button */}
         <Button
           onClick={() => setAddingNewQuestion(true)}
@@ -273,7 +269,7 @@ export default function PerformancePage() {
           <Plus className='mr-2 h-4 w-4' />
           Add New Question
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Add New Question Form */}
       {addingNewQuestion && (

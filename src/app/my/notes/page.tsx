@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
 import { Input } from '@/components/ui/input'
+import { PageHeader } from '@/components/ui/page-header'
 import { useCreateNote, useNotes } from '@/hooks/useNotes'
 import { formatDistanceToNow } from 'date-fns'
 import { Plus, Search } from 'lucide-react'
@@ -112,11 +112,10 @@ export default function NotesPage() {
       >
         <div className='h-full space-y-8 overflow-y-auto p-8'>
           {/* Header */}
-          <div className='space-y-6'>
-            <Heading level='h1' weight='bold'>
-              Notes
-            </Heading>
-
+          <PageHeader
+            title='Notes'
+            description='Capture your thoughts and ideas'
+          >
             {/* Search and New Note Button on same line */}
             <div className='flex items-center gap-4'>
               <div className='relative flex-1'>
@@ -136,7 +135,7 @@ export default function NotesPage() {
                 New Note
               </Button>
             </div>
-          </div>
+          </PageHeader>
 
           {/* Notes Grid */}
           {filteredNotes.length === 0 ? (

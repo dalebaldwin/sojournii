@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import { useAccountSettings } from '@/hooks/useAccountSettings'
 import {
   formatDateForDisplay,
@@ -223,15 +223,10 @@ export default function WorkHoursPage() {
   return (
     <div className='mx-auto max-w-4xl space-y-6 p-6'>
       {/* Header */}
-      <div className='space-y-2'>
-        <Heading level='h1' weight='bold' className='mb-2' showLines>
-          Work Hours
-        </Heading>
-        <p className='text-muted-foreground'>
-          Track your daily work hours for{' '}
-          {formatWeekRange(currentWeek.startDate, currentWeek.endDate)}
-        </p>
-      </div>
+      <PageHeader
+        title='Work Hours'
+        description={`Track your daily work hours for ${formatWeekRange(currentWeek.startDate, currentWeek.endDate)}`}
+      />
 
       {/* Weekly Dashboard */}
       <div className='bg-muted/30 rounded-lg p-6'>

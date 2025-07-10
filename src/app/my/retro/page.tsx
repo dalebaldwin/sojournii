@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import {
   useCreateRetro,
   useCurrentWeekInfo,
@@ -57,14 +57,10 @@ export default function RetroPage() {
   return (
     <div className='mx-auto max-w-4xl space-y-6 p-6'>
       {/* Header */}
-      <div className='space-y-2'>
-        <Heading level='h1' weight='bold' className='mb-2' showLines>
-          Weekly Retro
-        </Heading>
-        <p className='text-muted-foreground'>
-          Reflect on your weekly performance and personal growth
-        </p>
-      </div>
+      <PageHeader
+        title='Weekly Retro'
+        description='Reflect on your weekly performance and personal growth'
+      />
 
       {/* Current Week Section */}
       {currentWeekInfo && (

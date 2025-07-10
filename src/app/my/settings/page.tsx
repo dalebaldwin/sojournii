@@ -1,7 +1,7 @@
 'use client'
 
 import { OnboardingGuard } from '@/components/auth/OnboardingGuard'
-import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import { useAccountSettings } from '@/hooks/useAccountSettings'
 import { NotificationSettingsSection } from './sections/NotificationSettingsSection'
 import { WorkHoursSection } from './sections/WorkHoursSection'
@@ -12,14 +12,11 @@ export default function SettingsPage() {
   return (
     <OnboardingGuard>
       <div className='container mx-auto max-w-4xl p-6'>
-        <div className='mb-6'>
-          <Heading level='h1' weight='bold'>
-            Settings
-          </Heading>
-          <p className='text-muted-foreground mt-2'>
-            Manage your account preferences and work settings.
-          </p>
-        </div>
+        <PageHeader
+          title='Settings'
+          description='Manage your account preferences and work settings.'
+          className='mb-6'
+        />
 
         <div className='space-y-6'>
           <NotificationSettingsSection accountSettings={accountSettings} />

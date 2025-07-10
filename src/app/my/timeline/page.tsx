@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
 import {
   TIMELINE_EVENT_COLORS,
@@ -69,14 +69,11 @@ export default function TimelinePage() {
     <div className='bg-background min-h-screen'>
       <div className='mx-auto max-w-4xl p-6'>
         {/* Header */}
-        <div className='mb-8'>
-          <Heading level='h1' weight='bold' className='mb-2' showLines>
-            Timeline
-          </Heading>
-          <p className='text-muted-foreground text-lg'>
-            Track your progress across all goals and milestones
-          </p>
-        </div>
+        <PageHeader
+          title='Timeline'
+          description='Track your progress across all goals and milestones'
+          className='mb-8'
+        />
 
         {/* Timeline Events */}
         <div className='space-y-4'>

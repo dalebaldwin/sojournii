@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import { Separator } from '@/components/ui/separator'
 import { TiptapRenderer } from '@/components/ui/tiptap-renderer'
 import { useUserTimezone } from '@/hooks/useAccountSettings'
@@ -118,14 +119,11 @@ export default function GoalsPage() {
     <div className='bg-background min-h-screen'>
       <div className='mx-auto max-w-6xl p-6'>
         {/* Header */}
-        <div className='mb-8'>
-          <Heading level='h1' weight='bold' className='mb-2' showLines>
-            Goals Dashboard
-          </Heading>
-          <p className='text-muted-foreground'>
-            Track your progress and achieve your aspirations
-          </p>
-        </div>
+        <PageHeader
+          title='Goals Dashboard'
+          description='Track your progress and achieve your aspirations'
+          className='mb-8'
+        />
 
         {/* Dashboard Stats */}
         <div className='mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5'>

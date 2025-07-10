@@ -3,7 +3,7 @@
 import { OnboardingGuard } from '@/components/auth/OnboardingGuard'
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
 import { DotPattern } from '@/components/ui/dot-pattern'
-import { Heading } from '@/components/ui/heading'
+import { PageHeader } from '@/components/ui/page-header'
 import { useAccountSettings } from '@/hooks/useAccountSettings'
 import { cn } from '@/lib/utils'
 
@@ -18,12 +18,11 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className='container mx-auto p-6'>
-          <div className='mb-8'>
-            <Heading level='h1' weight='bold' className='mb-2' showLines>
-              Dashboard
-            </Heading>
-            <p className='text-muted-foreground'>Welcome to your career hub</p>
-          </div>
+          <PageHeader
+            title='Dashboard'
+            description='Welcome to your career hub'
+            className='mb-8'
+          />
 
           <BentoGrid className='grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {/* Retro - Large card */}
