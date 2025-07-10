@@ -2,10 +2,48 @@ import { ConvexError, v } from 'convex/values'
 import { mutation, query } from './_generated/server'
 
 // Helper function to get week start date for a given date (same as retros)
-const getWeekStart = (date: Date): string => {
-  const dayOfWeek = date.getDay()
-  const startDate = new Date(date)
-  startDate.setDate(date.getDate() - dayOfWeek) // Go to Sunday
+// Week starts on Monday to match frontend calculation
+const getWeekStart = (date: Date, userTimezone?: string): string => {
+  // If we have a user timezone, calculate the week based on that timezone
+  let workingDate: Date
+  if (userTimezone) {
+    try {
+      // Get the date in the user's timezone
+      const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: userTimezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      const parts = formatter.formatToParts(date)
+      const year = parseInt(
+        parts.find(part => part.type === 'year')?.value || '0'
+      )
+      const month = parseInt(
+        parts.find(part => part.type === 'month')?.value || '1'
+      )
+      const day = parseInt(
+        parts.find(part => part.type === 'day')?.value || '1'
+      )
+      workingDate = new Date(year, month - 1, day)
+    } catch (error) {
+      console.warn('Error converting date to user timezone:', error)
+      workingDate = new Date(date)
+    }
+  } else {
+    workingDate = new Date(date)
+  }
+
+  const dayOfWeek = workingDate.getDay()
+
+  // Calculate how many days to subtract to get to Monday
+  // If it's Sunday (0), we need to go back 6 days to get to Monday
+  // If it's Monday (1), we need to go back 0 days
+  // If it's Tuesday (2), we need to go back 1 day, etc.
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+
+  const startDate = new Date(workingDate)
+  startDate.setDate(workingDate.getDate() - daysToSubtract)
   return startDate.toISOString().split('T')[0]
 }
 
@@ -96,8 +134,17 @@ export const getWeeklyResponses = query({
 
     const userId = identity.subject
 
+    // Get user's timezone from account settings
+    const accountSettings = await ctx.db
+      .query('account_settings')
+      .withIndex('by_user', q => q.eq('user_id', userId))
+      .first()
+
+    const userTimezone = accountSettings?.weekly_reminder_time_zone
+
     // If no week provided, use current week
-    const weekStartDate = args.weekStartDate || getWeekStart(new Date())
+    const weekStartDate =
+      args.weekStartDate || getWeekStart(new Date(), userTimezone)
 
     // Get all responses for this week
     const responses = await ctx.db
@@ -147,8 +194,17 @@ export const createResponse = mutation({
       throw new ConvexError('Question not found or access denied')
     }
 
+    // Get user's timezone from account settings
+    const accountSettings = await ctx.db
+      .query('account_settings')
+      .withIndex('by_user', q => q.eq('user_id', userId))
+      .first()
+
+    const userTimezone = accountSettings?.weekly_reminder_time_zone
+
     // Use provided week or current week
-    const weekStartDate = args.weekStartDate || getWeekStart(new Date())
+    const weekStartDate =
+      args.weekStartDate || getWeekStart(new Date(), userTimezone)
 
     return await ctx.db.insert('performance_responses', {
       user_id: userId,
@@ -231,9 +287,23 @@ export const deleteResponse = mutation({
 
 export const getCurrentWeekInfo = query({
   args: {},
-  handler: async () => {
+  handler: async ctx => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) {
+      throw new ConvexError('Not authenticated')
+    }
+
+    const userId = identity.subject
+
+    // Get user's timezone from account settings
+    const accountSettings = await ctx.db
+      .query('account_settings')
+      .withIndex('by_user', q => q.eq('user_id', userId))
+      .first()
+
+    const userTimezone = accountSettings?.weekly_reminder_time_zone
     const now = new Date()
-    const weekStartDate = getWeekStart(now)
+    const weekStartDate = getWeekStart(now, userTimezone)
 
     const endDate = new Date(weekStartDate)
     endDate.setDate(endDate.getDate() + 6)

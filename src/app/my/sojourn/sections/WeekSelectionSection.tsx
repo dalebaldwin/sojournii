@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useUserTimezone } from '@/hooks/useAccountSettings'
 import {
   formatDateForDB,
   formatWeekRange,
@@ -29,6 +30,7 @@ export function WeekSelectionSection({
   nextStep,
 }: WeekSelectionSectionProps) {
   const [showWeekSelector, setShowWeekSelector] = useState(false)
+  const userTimezone = useUserTimezone()
 
   // Generate previous weeks (going back 6 months)
   const generatePreviousWeeks = () => {
@@ -40,7 +42,7 @@ export function WeekSelectionSection({
       const weekDate = new Date(today)
       weekDate.setDate(today.getDate() - i * 7)
 
-      const weekInfo = getCurrentWeek(weekDate)
+      const weekInfo = getCurrentWeek(weekDate, userTimezone)
       const weekOption = {
         startDate: formatDateForDB(weekInfo.startDate),
         endDate: formatDateForDB(weekInfo.endDate),

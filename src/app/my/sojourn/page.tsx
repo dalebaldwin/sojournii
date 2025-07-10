@@ -2,7 +2,7 @@
 
 import { Heading } from '@/components/ui/heading'
 import { ProgressBar } from '@/components/ui/progress-bar'
-import { useAccountSettings } from '@/hooks/useAccountSettings'
+import { useAccountSettings, useUserTimezone } from '@/hooks/useAccountSettings'
 import {
   formatDateForDB,
   formatWeekRange,
@@ -56,11 +56,12 @@ export default function SojournPage() {
   const { isAuthenticated } = useConvexAuth()
   const router = useRouter()
   const accountSettings = useAccountSettings()
+  const userTimezone = useUserTimezone()
 
   const [currentStep, setCurrentStep] = useState<SojournStep>('week-selection')
   const [dynamicSteps, setDynamicSteps] = useState<SojournStep[]>([])
   const [sojournData, setSojournData] = useState<SojournData>(() => {
-    const currentWeek = getCurrentWeek()
+    const currentWeek = getCurrentWeek(undefined, userTimezone)
     return {
       selectedWeek: {
         startDate: formatDateForDB(currentWeek.startDate),

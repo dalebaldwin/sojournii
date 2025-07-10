@@ -426,11 +426,23 @@ export interface DayInfo {
 
 /**
  * Get the current week starting from Monday
- * @param referenceDate - Date to calculate week from (defaults to today)
+ * @param referenceDate - Date to calculate week from (defaults to today in user's timezone)
+ * @param userTimezone - User's timezone (optional, defaults to browser timezone)
  * @returns WeekInfo object with start date, end date, and all days
  */
-export const getCurrentWeek = (referenceDate: Date = new Date()): WeekInfo => {
-  const date = new Date(referenceDate)
+export const getCurrentWeek = (
+  referenceDate?: Date,
+  userTimezone?: string
+): WeekInfo => {
+  // If no reference date provided, use today in user's timezone
+  let date: Date
+  if (referenceDate) {
+    date = new Date(referenceDate)
+  } else {
+    const timezone =
+      userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+    date = getTodayInTimezone(timezone)
+  }
 
   // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
   const dayOfWeek = date.getDay()
@@ -468,14 +480,18 @@ export const getCurrentWeek = (referenceDate: Date = new Date()): WeekInfo => {
 
 /**
  * Get detailed information for each day in the current week
- * @param referenceDate - Date to calculate week from (defaults to today)
+ * @param referenceDate - Date to calculate week from (defaults to today in user's timezone)
+ * @param userTimezone - User's timezone (optional, defaults to browser timezone)
  * @returns Array of DayInfo objects for each day of the week
  */
 export const getWeekDaysInfo = (
-  referenceDate: Date = new Date()
+  referenceDate?: Date,
+  userTimezone?: string
 ): DayInfo[] => {
-  const week = getCurrentWeek(referenceDate)
-  const today = new Date()
+  const week = getCurrentWeek(referenceDate, userTimezone)
+  const timezone =
+    userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+  const today = getTodayInTimezone(timezone)
   today.setHours(0, 0, 0, 0)
 
   const dayNames = [
@@ -510,6 +526,8 @@ export const getWeekDaysInfo = (
 
 /**
  * Format date for database storage (YYYY-MM-DD)
+ * This function formats the date as it appears in the local calendar,
+ * which is what we want for week-based calculations
  * @param date - Date to format
  * @returns Date string in YYYY-MM-DD format
  */
