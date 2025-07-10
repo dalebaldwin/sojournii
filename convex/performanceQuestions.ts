@@ -174,17 +174,44 @@ export const deleteQuestion = mutation({
       throw new ConvexError('Access denied')
     }
 
-    // Also delete all responses to this question
+    // Check if there are any responses to this question
     const responses = await ctx.db
       .query('performance_responses')
       .withIndex('by_question', q => q.eq('question_id', args.id))
       .collect()
 
-    for (const response of responses) {
-      await ctx.db.delete(response._id)
+    if (responses.length > 0) {
+      // Soft delete: disable the question instead of deleting it
+      await ctx.db.patch(args.id, {
+        is_active: false,
+        updated_at: Date.now(),
+      })
+      return { type: 'soft_delete' as const, responseCount: responses.length }
+    } else {
+      // Hard delete: no responses exist, safe to completely remove
+      await ctx.db.delete(args.id)
+      return { type: 'hard_delete' as const, responseCount: 0 }
+    }
+  },
+})
+
+export const getDisabledQuestions = query({
+  args: {},
+  handler: async ctx => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (!identity) {
+      throw new ConvexError('Not authenticated')
     }
 
-    await ctx.db.delete(args.id)
+    const userId = identity.subject
+
+    return await ctx.db
+      .query('performance_questions')
+      .withIndex('by_user_active', q =>
+        q.eq('user_id', userId).eq('is_active', false)
+      )
+      .order('desc') // Most recently disabled first
+      .collect()
   },
 })
 

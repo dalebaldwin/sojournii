@@ -129,7 +129,64 @@ function DialogDescription({
   )
 }
 
+// AlertDialog components for confirmation dialogs
+const AlertDialog = Dialog
+const AlertDialogTrigger = DialogTrigger
+const AlertDialogContent = DialogContent
+const AlertDialogHeader = DialogHeader
+const AlertDialogFooter = DialogFooter
+const AlertDialogTitle = DialogTitle
+const AlertDialogDescription = DialogDescription
+
+interface AlertDialogActionProps
+  extends React.ComponentProps<typeof DialogClose> {
+  variant?: 'default' | 'destructive'
+}
+
+function AlertDialogAction({
+  className,
+  variant = 'default',
+  ...props
+}: AlertDialogActionProps) {
+  return (
+    <DialogClose
+      className={cn(
+        'focus-visible:ring-ring inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+        variant === 'destructive'
+          ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+          : 'bg-primary text-primary-foreground hover:bg-primary/90',
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogCancel({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogClose>) {
+  return (
+    <DialogClose
+      className={cn(
+        'border-input bg-background ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring mt-2 inline-flex h-10 items-center justify-center rounded-md border px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:mt-0',
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
 export {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Dialog,
   DialogClose,
   DialogContent,

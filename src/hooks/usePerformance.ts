@@ -38,6 +38,10 @@ export function usePerformanceQuestions(includeInactive = false) {
   return useQuery(api.performanceQuestions.listQuestions, { includeInactive })
 }
 
+export function useDisabledQuestions() {
+  return useQuery(api.performanceQuestions.getDisabledQuestions)
+}
+
 export function usePerformanceQuestion(
   questionId?: Id<'performance_questions'>
 ) {
