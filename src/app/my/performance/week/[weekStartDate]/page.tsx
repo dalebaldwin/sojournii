@@ -310,7 +310,7 @@ export default function WeeklyPerformancePage() {
                             content={
                               response.response_json || response.response
                             }
-                            onUpdate={({ html: _html, json: _json }) => {
+                            onUpdate={() => {
                               // Store the updated content temporarily
                               // We'll handle saving when the user clicks Save
                             }}

@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
-    "dev": "next dev --turbopack",
+    "build": "doppler run -- next build",
+    "dev": "doppler run -- next dev --turbopack",
+    "dev:local": "next dev --turbopack",
+    "convex": "doppler run -- npx convex dev",
+    "convex:local": "npx convex dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "next lint",
-    "start": "next start",
+    "start": "doppler run -- next start",
     "test": "tsx --test src/**/*.test.js",
     "test:lib": "tsx --test src/lib/*.test.js"
   },

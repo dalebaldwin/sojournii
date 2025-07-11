@@ -205,7 +205,9 @@ function AccountSettings() {
 
 ## Environment Variables
 
-Ensure these environment variables are set:
+**Note**: This project now uses Doppler for environment variable management. See [DOPPLER_MIGRATION.md](./DOPPLER_MIGRATION.md) for details.
+
+Ensure these environment variables are set in Doppler:
 
 ```bash
 # Clerk
@@ -214,6 +216,13 @@ CLERK_SECRET_KEY=sk_...
 
 # Convex
 NEXT_PUBLIC_CONVEX_URL=https://...
+CONVEX_DEPLOYMENT=dev:...
+```
+
+To view current environment variables:
+
+```bash
+doppler secrets
 ```
 
 ## Deployment
