@@ -16,6 +16,24 @@ import Link from 'next/link'
 export default function HomePage() {
   const features = [
     {
+      icon: TrendingUp,
+      title: 'Performance',
+      description:
+        'Monitor your professional growth with detailed performance evaluations and insights.',
+    },
+    {
+      icon: Target,
+      title: 'Goals',
+      description:
+        'Set ambitious goals and track milestones with our guided goal-setting framework.',
+    },
+    {
+      icon: RotateCcw,
+      title: 'Retro',
+      description:
+        'Reflect on your weekly progress with structured retrospectives and learning opportunities.',
+    },
+    {
       icon: Clock4,
       title: 'Work Hours',
       description:
@@ -26,24 +44,6 @@ export default function HomePage() {
       title: 'Tasks',
       description:
         'Organize and complete your tasks with smart prioritization and progress tracking.',
-    },
-    {
-      icon: TrendingUp,
-      title: 'Performance',
-      description:
-        'Monitor your professional growth with detailed performance evaluations and insights.',
-    },
-    {
-      icon: RotateCcw,
-      title: 'Retro',
-      description:
-        'Reflect on your weekly progress with structured retrospectives and learning opportunities.',
-    },
-    {
-      icon: Target,
-      title: 'Goals',
-      description:
-        'Set ambitious goals and track milestones with our guided goal-setting framework.',
     },
     {
       icon: NotebookPen,
@@ -73,6 +73,12 @@ export default function HomePage() {
           </Heading>
         </div>
         <div className='flex items-center gap-4'>
+          <Link
+            href='/pricing'
+            className='text-muted-foreground hover:text-foreground transition-colors'
+          >
+            Pricing
+          </Link>
           <ThemeToggle />
           <Link href='/sign-in'>
             <Button variant='outline' size='sm'>
@@ -96,9 +102,9 @@ export default function HomePage() {
               <span className='text-primary'>Beautifully Tracked</span>
             </Heading>
             <p className='text-muted-foreground mt-6 text-xl leading-8 sm:text-2xl'>
-              Sojournii helps you track work hours, manage tasks, reflect on
-              performance, and achieve your professional goals—all in one
-              elegant platform.
+              Sojournii helps you monitor performance, achieve goals, conduct
+              retrospectives, track work hours, manage tasks, and capture
+              notes—all in one elegant platform.
             </p>
             <div className='mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row'>
               <Link href='/sign-up'>
@@ -192,6 +198,12 @@ export default function HomePage() {
               </Heading>
             </div>
             <div className='flex items-center gap-6'>
+              <Link
+                href='/pricing'
+                className='text-muted-foreground hover:text-foreground transition-colors'
+              >
+                Pricing
+              </Link>
               <Link
                 href='/privacy'
                 className='text-muted-foreground hover:text-foreground transition-colors'

@@ -17,6 +17,12 @@ export default function PrivacyPolicyPage() {
           </Link>
         </div>
         <div className='flex items-center gap-4'>
+          <Link
+            href='/pricing'
+            className='text-muted-foreground hover:text-foreground transition-colors'
+          >
+            Pricing
+          </Link>
           <ThemeToggle />
           <Link href='/sign-in'>
             <Button variant='outline' size='sm'>
@@ -206,6 +212,12 @@ export default function PrivacyPolicyPage() {
               </Link>
             </div>
             <div className='flex items-center gap-6'>
+              <Link
+                href='/pricing'
+                className='text-muted-foreground hover:text-foreground transition-colors'
+              >
+                Pricing
+              </Link>
               <Link
                 href='/privacy'
                 className='text-muted-foreground hover:text-foreground transition-colors'
