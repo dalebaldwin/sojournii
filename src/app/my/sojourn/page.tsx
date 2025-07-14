@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { useAccountSettings, useUserTimezone } from '@/hooks/useAccountSettings'
@@ -11,7 +12,7 @@ import {
 import { useUser } from '@clerk/nextjs'
 import { useConvexAuth, useQuery } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { api } from '../../../../convex/_generated/api'
@@ -322,7 +323,19 @@ export default function SojournPage() {
       {/* Progress Bar with Section Name */}
       <div className='bg-white dark:bg-gray-900'>
         <div className='container mx-auto px-4 py-3'>
-          <div className='mb-4 pt-4'>
+          <div className='relative mb-4 pt-4'>
+            {/* Exit Button */}
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={() => router.push('/my')}
+              className='absolute top-0 right-0'
+              aria-label='Exit sojourn'
+            >
+              <X className='mr-1 h-4 w-4' />
+              Exit
+            </Button>
+
             <Heading
               level='h1'
               weight='normal'
@@ -337,13 +350,15 @@ export default function SojournPage() {
               const skipInfo = getSkipToSection(currentSection)
               // Don't show skip link on the first page (week-selection)
               return skipInfo && currentStep !== 'week-selection' ? (
-                <button
+                <Button
+                  variant='ghost'
+                  size='sm'
                   onClick={skipToSection}
-                  className='mt-2 flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  className='mt-2 h-auto p-0 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                 >
                   <span>Skip to {skipInfo.nextSection}</span>
-                  <ChevronRight className='h-4 w-4' />
-                </button>
+                  <ChevronRight className='ml-1 h-4 w-4' />
+                </Button>
               ) : null
             })()}
           </div>

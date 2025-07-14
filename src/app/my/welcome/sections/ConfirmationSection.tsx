@@ -35,12 +35,14 @@ export function ConfirmationSection({
           <div className='bg-muted rounded-lg p-4'>
             <div className='mb-2 flex items-center justify-between'>
               <h3 className='font-semibold'>Notification Preferences</h3>
-              <button
+              <Button
+                variant='link'
+                size='sm'
                 onClick={() => goToStep('reminders')}
-                className='text-primary text-xs hover:underline'
+                className='text-primary h-auto p-0 text-xs'
               >
                 Change
-              </button>
+              </Button>
             </div>
             <p className='text-sm'>
               <span className='text-muted-foreground'>Notification Email:</span>{' '}
@@ -63,12 +65,14 @@ export function ConfirmationSection({
           <div className='bg-muted rounded-lg p-4'>
             <div className='mb-2 flex items-center justify-between'>
               <h3 className='font-semibold'>Work Hours</h3>
-              <button
+              <Button
+                variant='link'
+                size='sm'
                 onClick={() => goToStep('workHours')}
-                className='text-primary text-xs hover:underline'
+                className='text-primary h-auto p-0 text-xs'
               >
                 Change
-              </button>
+              </Button>
             </div>
             <p className='text-sm'>
               <span className='text-muted-foreground'>
@@ -99,12 +103,14 @@ export function ConfirmationSection({
             <div className='bg-muted rounded-lg p-4'>
               <div className='mb-2 flex items-center justify-between'>
                 <h3 className='font-semibold'>Employer Information</h3>
-                <button
+                <Button
+                  variant='link'
+                  size='sm'
                   onClick={() => goToStep('employer')}
-                  className='text-primary text-xs hover:underline'
+                  className='text-primary h-auto p-0 text-xs'
                 >
                   Change
-                </button>
+                </Button>
               </div>
               {welcomeData.employers.map((employer, index) => (
                 <div key={index} className='mb-2 last:mb-0'>
@@ -128,12 +134,14 @@ export function ConfirmationSection({
           <div className='bg-muted rounded-lg p-4'>
             <div className='mb-2 flex items-center justify-between'>
               <h3 className='font-semibold'>Performance Questions</h3>
-              <button
+              <Button
+                variant='link'
+                size='sm'
                 onClick={() => goToStep('performanceQuestions')}
-                className='text-primary text-xs hover:underline'
+                className='text-primary h-auto p-0 text-xs'
               >
                 Preview
-              </button>
+              </Button>
             </div>
             <p className='text-sm'>
               <span className='text-muted-foreground'>

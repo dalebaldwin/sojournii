@@ -412,39 +412,30 @@ export function WorkHourInlineForm({
             Work Location
           </Label>
           <div className='flex items-center gap-3'>
-            <button
+            <Button
               type='button'
+              variant={workLocation === 'home' ? 'default' : 'outline'}
+              size='sm'
               onClick={() => setWorkLocation('home')}
-              className={`rounded px-4 py-2 text-sm font-medium transition-colors ${
-                workLocation === 'home'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
             >
               🏠 Home
-            </button>
-            <button
+            </Button>
+            <Button
               type='button'
+              variant={workLocation === 'office' ? 'default' : 'outline'}
+              size='sm'
               onClick={() => setWorkLocation('office')}
-              className={`rounded px-4 py-2 text-sm font-medium transition-colors ${
-                workLocation === 'office'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
             >
               🏢 Office
-            </button>
-            <button
+            </Button>
+            <Button
               type='button'
+              variant={workLocation === 'hybrid' ? 'default' : 'outline'}
+              size='sm'
               onClick={() => setWorkLocation('hybrid')}
-              className={`rounded px-4 py-2 text-sm font-medium transition-colors ${
-                workLocation === 'hybrid'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
             >
               🔄 Hybrid
-            </button>
+            </Button>
           </div>
         </div>
 

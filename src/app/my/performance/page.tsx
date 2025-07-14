@@ -424,9 +424,10 @@ export default function PerformancePage() {
                     ) : (
                       <div>
                         <div className='flex items-start justify-between'>
-                          <button
+                          <Button
+                            variant='ghost'
                             onClick={() => toggleQuestion(question._id)}
-                            className='flex flex-1 items-start gap-3 text-left'
+                            className='flex h-auto flex-1 items-start justify-start gap-3 p-0 text-left'
                           >
                             {isExpanded ? (
                               <ChevronDown className='mt-1 h-5 w-5 text-gray-400' />
@@ -465,7 +466,7 @@ export default function PerformancePage() {
                                 </span>
                               </div>
                             </div>
-                          </button>
+                          </Button>
 
                           <div className='ml-4 flex gap-1'>
                             <Button

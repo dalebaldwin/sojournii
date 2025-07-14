@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Heading } from '@/components/ui/heading'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { cn } from '@/lib/utils'
@@ -144,10 +145,11 @@ export function Sidebar() {
       {/* User Menu */}
       <div className='border-t p-2'>
         <div className='relative'>
-          <button
+          <Button
             ref={userMenuButtonRef}
+            variant='ghost'
             onClick={toggleUserMenu}
-            className='hover:bg-muted flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium transition-colors'
+            className='flex h-auto w-full items-center justify-start gap-3 rounded-lg p-2 text-sm font-medium'
           >
             <div className='flex flex-1 items-center gap-3'>
               {user?.imageUrl ? (
@@ -178,7 +180,7 @@ export function Sidebar() {
                 isUserMenuOpen && 'rotate-180'
               )}
             />
-          </button>
+          </Button>
 
           {/* Dropdown Menu */}
           <AnimatePresence>
@@ -213,10 +215,13 @@ export function Sidebar() {
 
                   <div className='border-t pt-1'>
                     <SignOutButton>
-                      <button className='flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300'>
+                      <Button
+                        variant='ghost'
+                        className='flex h-auto w-full items-center justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300'
+                      >
                         <LogOut className='h-4 w-4' />
                         Sign Out
-                      </button>
+                      </Button>
                     </SignOutButton>
                   </div>
                 </div>
@@ -231,12 +236,14 @@ export function Sidebar() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <button
+      <Button
+        variant='outline'
+        size='icon'
         onClick={toggleMenu}
-        className='bg-background fixed top-4 left-4 z-50 rounded-md border p-2 shadow-sm lg:hidden'
+        className='bg-background fixed top-4 left-4 z-50 shadow-sm lg:hidden'
       >
         {isOpen ? <X className='h-5 w-5' /> : <Menu className='h-5 w-5' />}
-      </button>
+      </Button>
 
       {/* Desktop Sidebar */}
       <div className='fixed top-0 left-0 z-40 hidden h-full w-[275px] lg:block'>
