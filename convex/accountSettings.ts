@@ -40,6 +40,7 @@ export const createAccountSettings = mutation({
       v.literal('sunday')
     ),
     weekly_reminder_time_zone: v.string(),
+    scheduled_weekly_reminder_id: v.optional(v.string()),
     perf_questions: v.optional(
       v.array(
         v.object({
@@ -102,6 +103,7 @@ export const createAccountSettings = mutation({
       weekly_reminder_minute: args.weekly_reminder_minute,
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
+      scheduled_weekly_reminder_id: args.scheduled_weekly_reminder_id,
       work_hours: args.work_hours,
       work_minutes: args.work_minutes,
       work_start_hour: args.work_start_hour,
@@ -173,6 +175,8 @@ export const updateAccountSettings = mutation({
       )
     ),
     weekly_reminder_time_zone: v.optional(v.string()),
+    scheduled_weekly_reminder_id: v.optional(v.string()),
+    email_notifications_disabled: v.optional(v.boolean()),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
     work_start_hour: v.optional(v.number()),
@@ -230,6 +234,8 @@ export const updateAccountSettings = mutation({
         | 'saturday'
         | 'sunday'
       weekly_reminder_time_zone?: string
+      scheduled_weekly_reminder_id?: string
+      email_notifications_disabled?: boolean
       work_hours?: number
       work_minutes?: number
       work_start_hour?: number
@@ -271,6 +277,13 @@ export const updateAccountSettings = mutation({
       updateData.weekly_reminder_day = args.weekly_reminder_day
     if (args.weekly_reminder_time_zone !== undefined)
       updateData.weekly_reminder_time_zone = args.weekly_reminder_time_zone
+    if (args.scheduled_weekly_reminder_id !== undefined)
+      updateData.scheduled_weekly_reminder_id =
+        args.scheduled_weekly_reminder_id
+    if (args.email_notifications_disabled !== undefined) {
+      updateData.email_notifications_disabled =
+        args.email_notifications_disabled
+    }
     if (args.work_hours !== undefined) updateData.work_hours = args.work_hours
     if (args.work_minutes !== undefined)
       updateData.work_minutes = args.work_minutes

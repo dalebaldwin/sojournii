@@ -15,10 +15,11 @@ import {
   WelcomeStep,
 } from '@/lib/welcome-data'
 import { useUser } from '@clerk/nextjs'
-import { useConvexAuth } from 'convex/react'
+import { useAction, useConvexAuth } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { api } from '../../../../convex/_generated/api'
 import { ConfirmationSection } from './sections/ConfirmationSection'
 import { EmailSection } from './sections/EmailSection'
 import { EmployerSection } from './sections/EmployerSection'
@@ -34,6 +35,7 @@ export default function WelcomePage() {
   const router = useRouter()
   const createSettings = useCreateAccountSettings()
   const accountSettings = useAccountSettings()
+  const sendWelcomeEmail = useAction(api.resend.sendWelcomeEmail)
 
   const userTimezone = getUserTimezone()
   const initial12Hour = convertTo12Hour(16) // Default to 4 PM (Friday 4:30 PM)
@@ -246,6 +248,23 @@ export default function WelcomePage() {
 
       const result = await createSettings(settingsData)
       console.log('Save result:', result)
+
+      // Send welcome email after successful account creation
+      try {
+        const emailToSend =
+          settingsData.notifications_email || settingsData.clerk_email
+        const firstName = user?.firstName || undefined
+
+        console.log('Sending welcome email to:', emailToSend)
+        await sendWelcomeEmail({
+          to: emailToSend,
+          firstName: firstName,
+        })
+        console.log('Welcome email sent successfully')
+      } catch (emailError) {
+        console.error('Error sending welcome email:', emailError)
+        // Don't fail the entire onboarding process if email fails
+      }
 
       // Go to ready step instead of directly to /my
       setCurrentStep('ready')

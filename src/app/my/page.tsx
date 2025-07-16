@@ -1,6 +1,7 @@
 'use client'
 
 import { OnboardingGuard } from '@/components/auth/OnboardingGuard'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
 import { Button } from '@/components/ui/button'
 import { DotPattern } from '@/components/ui/dot-pattern'
@@ -11,6 +12,7 @@ import { useUserGoals, useUserMilestones } from '@/hooks/useGoals'
 import { useTasks } from '@/hooks/useTasks'
 import { useWorkHoursSummary } from '@/hooks/useWorkHours'
 import { cn } from '@/lib/utils'
+import { useAction } from 'convex/react'
 import { endOfWeek, format, startOfWeek } from 'date-fns'
 import {
   AlertCircle,
@@ -19,13 +21,20 @@ import {
   Clock,
   Coffee,
   Home,
+  Mail,
   MapPin,
   Target,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
+import { api } from '../../../convex/_generated/api'
 
 export default function DashboardPage() {
   const accountSettings = useAccountSettings()
+  const enableEmailNotifications = useAction(
+    api.resend.enableEmailNotifications
+  )
+  const [isEnablingEmail, setIsEnablingEmail] = useState(false)
   const goals = useUserGoals()
   const milestones = useUserMilestones()
   const tasks = useTasks()
@@ -88,6 +97,20 @@ export default function DashboardPage() {
     ? workHoursSummary.totalHours + workHoursSummary.totalMinutes / 60
     : 0
 
+  const handleEnableEmailNotifications = async () => {
+    if (!accountSettings?._id) return
+
+    setIsEnablingEmail(true)
+    try {
+      await enableEmailNotifications({ userId: accountSettings._id })
+      // The UI will update automatically via the accountSettings hook
+    } catch (error) {
+      console.error('Failed to enable email notifications:', error)
+    } finally {
+      setIsEnablingEmail(false)
+    }
+  }
+
   return (
     <OnboardingGuard>
       {!accountSettings ? (
@@ -101,6 +124,39 @@ export default function DashboardPage() {
             description='Welcome to your career hub'
             className='mb-8'
           />
+
+          {/* Email Notification Alert */}
+          {accountSettings?.email_notifications_disabled && (
+            <Alert variant='destructive' className='mb-6'>
+              <Mail className='h-4 w-4' />
+              <AlertTitle>Email Notifications Disabled</AlertTitle>
+              <AlertDescription>
+                <p className='mb-3'>
+                  Your email notifications have been disabled due to delivery
+                  issues with your current email address.
+                </p>
+                <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={handleEnableEmailNotifications}
+                    disabled={isEnablingEmail}
+                    className='border-red-200 bg-white text-red-600 hover:bg-red-50'
+                  >
+                    {isEnablingEmail
+                      ? 'Enabling...'
+                      : 'Re-enable Notifications'}
+                  </Button>
+                  <span className='text-sm'>
+                    or{' '}
+                    <Link href='/my/settings' className='font-medium underline'>
+                      update your email address in Settings
+                    </Link>
+                  </span>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
 
           <BentoGrid className='grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {/* Work Hours - Large card */}

@@ -21,6 +21,8 @@ export default defineSchema({
       v.literal('sunday')
     ),
     weekly_reminder_time_zone: v.string(),
+    scheduled_weekly_reminder_id: v.optional(v.string()),
+    email_notifications_disabled: v.optional(v.boolean()),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
     work_start_hour: v.optional(v.number()),
