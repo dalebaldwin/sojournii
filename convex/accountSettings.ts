@@ -41,16 +41,6 @@ export const createAccountSettings = mutation({
     ),
     weekly_reminder_time_zone: v.string(),
     scheduled_weekly_reminder_id: v.optional(v.string()),
-    perf_questions: v.optional(
-      v.array(
-        v.object({
-          title: v.string(),
-          description: v.string(),
-          description_html: v.optional(v.string()),
-          description_json: v.optional(v.string()),
-        })
-      )
-    ),
     work_hours: v.optional(v.number()),
     work_minutes: v.optional(v.number()),
     work_start_hour: v.optional(v.number()),
@@ -92,7 +82,7 @@ export const createAccountSettings = mutation({
     const now = Date.now()
 
     // RLS: Create settings with the authenticated user's ID
-    const settingsId = await ctx.db.insert('account_settings', {
+    const accountSettingsId = await ctx.db.insert('account_settings', {
       user_id: userId,
       clerk_email: args.clerk_email,
       notifications_email: args.notifications_email,
@@ -120,36 +110,16 @@ export const createAccountSettings = mutation({
       updated_at: now,
     })
 
-    // Create performance questions if provided
-    if (args.perf_questions && args.perf_questions.length > 0) {
-      for (let i = 0; i < args.perf_questions.length; i++) {
-        const question = args.perf_questions[i]
-        await ctx.db.insert('performance_questions', {
-          user_id: userId,
-          title: question.title,
-          description: question.description,
-          description_html: question.description_html,
-          description_json: question.description_json,
-          order: i + 1,
-          is_active: true,
-          created_at: now,
-          updated_at: now,
-        })
-      }
-    }
+    // Create timeline event for joining Sojournii
+    await ctx.db.insert('timeline_events', {
+      user_id: userId,
+      event_type: 'joined_sojournii',
+      title: 'Joined Sojournii',
+      description: 'Welcome to your professional journey tracking!',
+      created_at: now,
+    })
 
-    // If onboarding is completed, create the "Joined Sojournii" milestone
-    if (args.onboarding_completed === true) {
-      await ctx.db.insert('timeline_events', {
-        user_id: userId,
-        event_type: TIMELINE_EVENT_TYPES.JOINED_SOJOURNII,
-        title: 'Joined Sojournii',
-        description: 'Welcome to Sojournii! Your journey begins here.',
-        created_at: now,
-      })
-    }
-
-    return settingsId
+    return accountSettingsId
   },
 })
 

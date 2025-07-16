@@ -99,65 +99,57 @@ export function ConfirmationSection({
               {welcomeData.break_hours}h {welcomeData.break_minutes}m
             </p>
           </div>
-          {welcomeData.employers && welcomeData.employers.length > 0 && (
-            <div className='bg-muted rounded-lg p-4'>
-              <div className='mb-2 flex items-center justify-between'>
-                <h3 className='font-semibold'>Employer Information</h3>
-                <Button
-                  variant='link'
-                  size='sm'
-                  onClick={() => goToStep('employer')}
-                  className='text-primary h-auto p-0 text-xs'
-                >
-                  Change
-                </Button>
-              </div>
-              {welcomeData.employers.map((employer, index) => (
-                <div key={index} className='mb-2 last:mb-0'>
-                  <p className='text-sm'>
-                    <span className='text-muted-foreground'>
-                      {index === 0
-                        ? 'Current Employer:'
-                        : `Previous Employer ${index + 1}:`}
-                    </span>{' '}
-                    {employer.employer_name}
-                  </p>
-                  <p className='text-sm'>
-                    <span className='text-muted-foreground'>Start Date:</span>{' '}
-                    {employer.start_month}/{employer.start_day}/
-                    {employer.start_year}
-                  </p>
+
+          {/* Only show employer section if user has entered employer data */}
+          {welcomeData.employers &&
+            welcomeData.employers.length > 0 &&
+            welcomeData.employers.some(
+              emp =>
+                emp.employer_name.trim() &&
+                emp.start_year &&
+                emp.start_month &&
+                emp.start_day
+            ) && (
+              <div className='bg-muted rounded-lg p-4'>
+                <div className='mb-2 flex items-center justify-between'>
+                  <h3 className='font-semibold'>Employer Information</h3>
+                  <Button
+                    variant='link'
+                    size='sm'
+                    onClick={() => goToStep('employer')}
+                    className='text-primary h-auto p-0 text-xs'
+                  >
+                    Change
+                  </Button>
                 </div>
-              ))}
-            </div>
-          )}
-          <div className='bg-muted rounded-lg p-4'>
-            <div className='mb-2 flex items-center justify-between'>
-              <h3 className='font-semibold'>Performance Questions</h3>
-              <Button
-                variant='link'
-                size='sm'
-                onClick={() => goToStep('performanceQuestions')}
-                className='text-primary h-auto p-0 text-xs'
-              >
-                Preview
-              </Button>
-            </div>
-            <p className='text-sm'>
-              <span className='text-muted-foreground'>
-                Number of Questions:
-              </span>{' '}
-              {welcomeData.performanceQuestions.length} questions
-            </p>
-            <p className='text-muted-foreground mt-1 text-xs'>
-              Using default performance questions that can be customized later
-              in settings.
-            </p>
-          </div>
+                <div className='space-y-2'>
+                  {welcomeData.employers
+                    .filter(
+                      emp =>
+                        emp.employer_name.trim() &&
+                        emp.start_year &&
+                        emp.start_month &&
+                        emp.start_day
+                    )
+                    .map((employer, index) => (
+                      <div key={index} className='text-sm'>
+                        <span className='font-medium'>
+                          {employer.employer_name}
+                        </span>
+                        <span className='text-muted-foreground ml-2'>
+                          Started {employer.start_month}/{employer.start_day}/
+                          {employer.start_year}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
         </div>
+
         <div className='flex justify-between'>
-          <Button variant='ghost' onClick={prevStep} disabled={saving}>
-            Back
+          <Button variant='outline' onClick={prevStep}>
+            Previous
           </Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? 'Saving...' : 'Save Settings'}

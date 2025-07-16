@@ -15,7 +15,7 @@ import {
   WelcomeStep,
 } from '@/lib/welcome-data'
 import { useUser } from '@clerk/nextjs'
-import { useAction, useConvexAuth } from 'convex/react'
+import { useAction, useConvexAuth, useMutation } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -36,6 +36,9 @@ export default function WelcomePage() {
   const createSettings = useCreateAccountSettings()
   const accountSettings = useAccountSettings()
   const sendWelcomeEmail = useAction(api.resend.sendWelcomeEmail)
+  const createPerformanceQuestionMutation = useMutation(
+    api.performanceQuestions.createQuestion
+  )
 
   const userTimezone = getUserTimezone()
   const initial12Hour = convertTo12Hour(16) // Default to 4 PM (Friday 4:30 PM)
@@ -248,6 +251,26 @@ export default function WelcomePage() {
 
       const result = await createSettings(settingsData)
       console.log('Save result:', result)
+
+      // Create performance questions separately
+      try {
+        console.log('Creating performance questions...')
+
+        for (let i = 0; i < defaultPerformanceQuestions.length; i++) {
+          const question = defaultPerformanceQuestions[i]
+          await createPerformanceQuestionMutation({
+            title: question.title,
+            description: question.description,
+            description_html: question.description_html,
+            description_json: question.description_json,
+            order: i + 1,
+          })
+        }
+        console.log('Performance questions created successfully')
+      } catch (questionError) {
+        console.error('Error creating performance questions:', questionError)
+        // Don't fail the entire onboarding process if questions fail
+      }
 
       // Send welcome email after successful account creation
       try {
