@@ -224,155 +224,7 @@ export const getUserByEmail = internalQuery({
   },
 })
 
-// Internal action to schedule weekly reminder
-export const scheduleWeeklyReminder = internalAction({
-  args: {
-    userId: v.id('account_settings'),
-    email: v.string(),
-  },
-  handler: async (ctx, args): Promise<any> => {
-    // Get user settings
-    const userSettings: any = await ctx.runQuery(
-      internal.resend.getUserSettings,
-      {
-        userId: args.userId,
-      }
-    )
-
-    if (!userSettings || !userSettings.weekly_reminder) {
-      console.log('Weekly reminder not enabled for user:', args.userId)
-      return
-    }
-
-    // Calculate next reminder time based on timezone and preferences
-    const nextReminderTime: Date = calculateNextReminderTime(
-      userSettings.weekly_reminder_day,
-      userSettings.weekly_reminder_hour,
-      userSettings.weekly_reminder_minute,
-      userSettings.weekly_reminder_time_zone
-    )
-
-    // Format the time for Resend API (ISO 8601 format)
-    const scheduledAt: string = nextReminderTime.toISOString()
-
-    console.log('Scheduling weekly reminder for:', {
-      userId: args.userId,
-      email: args.email,
-      nextReminderTime: nextReminderTime,
-      scheduledAt: scheduledAt,
-      timezone: userSettings.weekly_reminder_time_zone,
-    })
-
-    // Actually schedule the email with Resend by calling the API directly
-    const resendApiKey = process.env.RESEND_API_KEY
-    if (!resendApiKey) {
-      throw new Error('RESEND_API_KEY not configured')
-    }
-
-    const reminderEmailPayload: any = {
-      from: 'onboarding@resend.dev',
-      to: args.email,
-      subject: 'Weekly Sojourn Reminder - Time to Reflect on Your Journey',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #2563eb; margin-bottom: 20px;">Your Weekly Sojourn Awaits</h1>
-          
-          <p>Hi ${userSettings.first_name || 'there'}!</p>
-          
-          <p>It's time for your weekly professional reflection. Take a few minutes to track your progress and celebrate your growth.</p>
-          
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #1e40af; margin-top: 0;">This Week's Reflection:</h3>
-            <ul style="color: #475569;">
-              <li>Review your goals and milestones</li>
-              <li>Track your work hours and productivity</li>
-              <li>Reflect on your performance questions</li>
-              <li>Note any achievements or challenges</li>
-            </ul>
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="https://sojournii.com/my/sojourn" 
-               style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500;">
-              Start Your Weekly Sojourn
-            </a>
-          </div>
-          
-          <p style="color: #64748b; font-size: 14px; margin-top: 30px;">
-            This is your weekly reminder as requested. You can update your notification preferences in your 
-            <a href="https://sojournii.com/my/settings" style="color: #2563eb;">account settings</a>.
-          </p>
-        </div>
-      `,
-      scheduled_at: scheduledAt,
-    }
-
-    try {
-      const response: Response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify(reminderEmailPayload),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.text()
-        console.error('Resend API error response:', errorData)
-        throw new Error(
-          `Failed to schedule weekly reminder email: ${response.status} ${errorData}`
-        )
-      }
-
-      const result: any = await response.json()
-      console.log('Weekly reminder scheduled successfully:', result)
-
-      // Update user settings with the actual scheduled email ID from Resend
-      await ctx.runMutation(internal.resend.updateScheduledReminderId, {
-        userId: args.userId,
-        scheduledId: result.id || `scheduled_${Date.now()}_${args.userId}`,
-      })
-
-      return result
-    } catch (error) {
-      console.error('Error scheduling weekly reminder:', error)
-
-      // Still update with a fallback ID so we know scheduling was attempted
-      await ctx.runMutation(internal.resend.updateScheduledReminderId, {
-        userId: args.userId,
-        scheduledId: `failed_${Date.now()}_${args.userId}`,
-      })
-
-      throw error
-    }
-  },
-})
-
-// Internal query to get user settings
-export const getUserSettings = internalQuery({
-  args: {
-    userId: v.id('account_settings'),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.db.get(args.userId)
-  },
-})
-
-// Internal mutation to update scheduled reminder ID
-export const updateScheduledReminderId = internalMutation({
-  args: {
-    userId: v.id('account_settings'),
-    scheduledId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.userId, {
-      scheduled_weekly_reminder_id: args.scheduledId,
-    })
-  },
-})
-
-// Internal mutation to disable email notifications
+// Internal action to disable email notifications
 export const disableEmailNotifications = internalMutation({
   args: {
     userId: v.id('account_settings'),
@@ -516,54 +368,10 @@ export const sendWelcomeEmail = action({
   },
 })
 
-// Helper function to calculate next reminder time
-function calculateNextReminderTime(
-  day: string,
-  hour: number,
-  minute: number,
-  timezone: string
-): Date {
-  const days = [
-    'sunday',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-  ]
-  const targetDay = days.indexOf(day.toLowerCase())
-
-  const now = new Date()
-  const currentDay = now.getDay()
-
-  // Calculate days until next occurrence
-  let daysUntilTarget = (targetDay - currentDay + 7) % 7
-  if (daysUntilTarget === 0) {
-    // If it's the same day, check if the time has passed
-    const targetTime = new Date(now)
-    targetTime.setHours(hour, minute, 0, 0)
-
-    if (targetTime <= now) {
-      daysUntilTarget = 7 // Next week
-    }
-  }
-
-  const nextReminder = new Date(now)
-  nextReminder.setDate(now.getDate() + daysUntilTarget)
-  nextReminder.setHours(hour, minute, 0, 0)
-
-  // TODO: Implement proper timezone handling using the timezone parameter
-  console.log('Timezone handling not implemented yet:', timezone)
-
-  return nextReminder
-}
-
-// Send weekly reminder email action
-export const sendWeeklyReminderEmail = action({
+// Send weekly reminder email as an internalAction so it can be called from the cron job
+export const sendWeeklyReminderEmail = internalAction({
   args: {
     to: v.string(),
-    firstName: v.optional(v.string()),
     scheduledAt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -656,7 +464,7 @@ export const sendWeeklyReminderEmail = action({
 })
 
 // Cron job: runs every 15 minutes
-export const weeklyReminderCron = internalAction({
+export const weeklyReminderCron = internalMutation({
   args: {},
   handler: async ctx => {
     // Get current UTC time rounded down to the nearest 15 minutes
@@ -669,7 +477,7 @@ export const weeklyReminderCron = internalAction({
     // Query users whose next_weekly_reminder_utc is within this window
     const users = await ctx.db
       .query('account_settings')
-      .withIndex('by_next_weekly_reminder_utc', q =>
+      .withIndex('by_next_weekly_reminder_utc', (q: any) =>
         q
           .gte('next_weekly_reminder_utc', windowStart.getTime())
           .lt('next_weekly_reminder_utc', windowEnd.getTime())
@@ -681,7 +489,6 @@ export const weeklyReminderCron = internalAction({
       // Send the reminder
       await ctx.scheduler.runAfter(0, internal.resend.sendWeeklyReminderEmail, {
         to: user.notifications_email || user.clerk_email,
-        firstName: user.first_name,
       })
       // Update next_weekly_reminder_utc to next week
       const nextUtc = addWeeks(

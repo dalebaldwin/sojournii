@@ -105,7 +105,6 @@ export const createAccountSettings = mutation({
       weekly_reminder_minute: args.weekly_reminder_minute,
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
-      scheduled_weekly_reminder_id: args.scheduled_weekly_reminder_id,
       next_weekly_reminder_utc: nextWeeklyReminderUtc,
       work_hours: args.work_hours,
       work_minutes: args.work_minutes,
