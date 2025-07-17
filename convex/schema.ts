@@ -49,10 +49,12 @@ export default defineSchema({
     ),
     created_at: v.number(),
     updated_at: v.number(),
+    next_weekly_reminder_utc: v.optional(v.number()),
   })
     .index('by_token', ['tokenIdentifier'])
     .index('by_user', ['user_id'])
-    .index('clerk_email', ['clerk_email']),
+    .index('clerk_email', ['clerk_email'])
+    .index('by_next_weekly_reminder_utc', ['next_weekly_reminder_utc']),
 
   goals: defineTable({
     user_id: v.string(),

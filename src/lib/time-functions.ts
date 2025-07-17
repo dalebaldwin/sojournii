@@ -585,3 +585,57 @@ export const isDateEditable = (date: Date): boolean => {
 
   return checkDate <= today
 }
+
+import { isBefore, set } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+
+/**
+ * Calculate the next weekly reminder UTC timestamp for a user.
+ * @param dayOfWeek - e.g. 'monday', 'tuesday', ...
+ * @param hour - 0-23 (24-hour format)
+ * @param minute - 0-59
+ * @param timezone - IANA timezone string
+ * @returns Unix timestamp (ms) for the next reminder in UTC
+ */
+export function getNextWeeklyReminderUtc(
+  dayOfWeek: string,
+  hour: number,
+  minute: number,
+  timezone: string
+): number {
+  const days = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ]
+  const targetDay = days.indexOf(dayOfWeek.toLowerCase())
+  if (targetDay === -1) throw new Error('Invalid dayOfWeek')
+
+  // Get current time in user's timezone
+  const now = new Date()
+  const nowInTz = toZonedTime(now, timezone)
+  const currentDay = nowInTz.getDay()
+
+  // Calculate days until next occurrence
+  let daysUntilTarget = (targetDay - currentDay + 7) % 7
+  const next = set(nowInTz, {
+    hours: hour,
+    minutes: minute,
+    seconds: 0,
+    milliseconds: 0,
+  })
+  if (daysUntilTarget === 0 && isBefore(next, nowInTz)) {
+    daysUntilTarget = 7 // Next week
+  }
+  next.setDate(nowInTz.getDate() + daysUntilTarget)
+
+  // Fallback: convert the next local time to UTC timestamp manually
+  // next is in the user's local time zone, so we need to get the equivalent UTC timestamp
+  // The offset is in minutes, so convert to ms
+  const utcTimestamp = next.getTime() - next.getTimezoneOffset() * 60000
+  return utcTimestamp
+}

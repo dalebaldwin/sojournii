@@ -252,6 +252,8 @@ export default function WelcomePage() {
       const result = await createSettings(settingsData)
       console.log('Save result:', result)
 
+      // Weekly reminder scheduling is now handled within createAccountSettings in Convex
+
       // Create performance questions separately
       try {
         console.log('Creating performance questions...')

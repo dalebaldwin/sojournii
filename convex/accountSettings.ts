@@ -1,5 +1,7 @@
 import { v } from 'convex/values'
 import { TIMELINE_EVENT_TYPES } from '../src/lib/milestone-events'
+import { getNextWeeklyReminderUtc } from '../src/lib/time-functions'
+import { internal } from './_generated/api'
 import { mutation, query } from './_generated/server'
 import { canAccessDocument, getClerkUserId, requireAuth } from './lib/auth'
 
@@ -81,6 +83,16 @@ export const createAccountSettings = mutation({
 
     const now = Date.now()
 
+    let nextWeeklyReminderUtc: number | undefined = undefined
+    if (args.weekly_reminder) {
+      nextWeeklyReminderUtc = getNextWeeklyReminderUtc(
+        args.weekly_reminder_day,
+        args.weekly_reminder_hour,
+        args.weekly_reminder_minute,
+        args.weekly_reminder_time_zone
+      )
+    }
+
     // RLS: Create settings with the authenticated user's ID
     const accountSettingsId = await ctx.db.insert('account_settings', {
       user_id: userId,
@@ -94,6 +106,7 @@ export const createAccountSettings = mutation({
       weekly_reminder_day: args.weekly_reminder_day,
       weekly_reminder_time_zone: args.weekly_reminder_time_zone,
       scheduled_weekly_reminder_id: args.scheduled_weekly_reminder_id,
+      next_weekly_reminder_utc: nextWeeklyReminderUtc,
       work_hours: args.work_hours,
       work_minutes: args.work_minutes,
       work_start_hour: args.work_start_hour,
@@ -118,6 +131,14 @@ export const createAccountSettings = mutation({
       description: 'Welcome to your professional journey tracking!',
       created_at: now,
     })
+
+    // Schedule weekly reminder after account creation
+    if (args.weekly_reminder && args.notifications_email) {
+      await ctx.scheduler.runAfter(0, internal.resend.scheduleWeeklyReminder, {
+        userId: accountSettingsId,
+        email: args.notifications_email,
+      })
+    }
 
     return accountSettingsId
   },
@@ -206,6 +227,7 @@ export const updateAccountSettings = mutation({
       weekly_reminder_time_zone?: string
       scheduled_weekly_reminder_id?: string
       email_notifications_disabled?: boolean
+      next_weekly_reminder_utc?: number
       work_hours?: number
       work_minutes?: number
       work_start_hour?: number
@@ -276,6 +298,27 @@ export const updateAccountSettings = mutation({
     if (args.break_minutes !== undefined)
       updateData.break_minutes = args.break_minutes
     if (args.employers !== undefined) updateData.employers = args.employers
+
+    // Recalculate next_weekly_reminder_utc if any relevant fields are updated
+    const shouldRecalculate =
+      args.weekly_reminder_day !== undefined ||
+      args.weekly_reminder_hour !== undefined ||
+      args.weekly_reminder_minute !== undefined ||
+      args.weekly_reminder_time_zone !== undefined
+    if (shouldRecalculate) {
+      const day = args.weekly_reminder_day ?? settings.weekly_reminder_day
+      const hour = args.weekly_reminder_hour ?? settings.weekly_reminder_hour
+      const minute =
+        args.weekly_reminder_minute ?? settings.weekly_reminder_minute
+      const tz =
+        args.weekly_reminder_time_zone ?? settings.weekly_reminder_time_zone
+      updateData.next_weekly_reminder_utc = getNextWeeklyReminderUtc(
+        day,
+        hour,
+        minute,
+        tz
+      )
+    }
 
     await ctx.db.patch(args.id, updateData)
 
