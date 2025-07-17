@@ -1,7 +1,6 @@
 import { v } from 'convex/values'
 import { TIMELINE_EVENT_TYPES } from '../src/lib/milestone-events'
 import { getNextWeeklyReminderUtc } from '../src/lib/time-functions'
-import { internal } from './_generated/api'
 import { mutation, query } from './_generated/server'
 import { canAccessDocument, getClerkUserId, requireAuth } from './lib/auth'
 
@@ -131,13 +130,7 @@ export const createAccountSettings = mutation({
       created_at: now,
     })
 
-    // Schedule weekly reminder after account creation
-    if (args.weekly_reminder && args.notifications_email) {
-      await ctx.scheduler.runAfter(0, internal.resend.scheduleWeeklyReminder, {
-        userId: accountSettingsId,
-        email: args.notifications_email,
-      })
-    }
+    // Remove any calls to scheduleWeeklyReminder or related scheduling logic
 
     return accountSettingsId
   },

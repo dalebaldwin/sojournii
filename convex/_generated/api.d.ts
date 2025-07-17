@@ -14,7 +14,6 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as accountSettings from "../accountSettings.js";
-import type * as crons from "../crons.js";
 import type * as goals from "../goals.js";
 import type * as http from "../http.js";
 import type * as lib_auth from "../lib/auth.js";
@@ -38,7 +37,6 @@ import type * as workHours from "../workHours.js";
  */
 declare const fullApi: ApiFromModules<{
   accountSettings: typeof accountSettings;
-  crons: typeof crons;
   goals: typeof goals;
   http: typeof http;
   "lib/auth": typeof lib_auth;

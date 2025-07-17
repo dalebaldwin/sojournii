@@ -1,5 +1,4 @@
 import { v } from 'convex/values'
-import { addWeeks } from 'date-fns'
 import { internal } from './_generated/api'
 import {
   action,
@@ -303,7 +302,7 @@ export const sendWelcomeEmail = action({
     }
 
     const welcomeEmailPayload = {
-      from: 'onboarding@resend.dev',
+      from: 'Sojournii <no-reply@sojournii.com>',
       to: args.to,
       subject: 'Welcome to Sojournii!',
       html: `
@@ -394,14 +393,14 @@ export const sendWeeklyReminderEmail = internalAction({
     }
 
     const reminderEmailPayload = {
-      from: 'onboarding@resend.dev',
+      from: 'Sojournii <no-reply@sojournii.com>',
       to: args.to,
       subject: 'Weekly Sojourn Reminder - Time to Reflect on Your Journey',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #2563eb; margin-bottom: 20px;">Your Weekly Sojourn Awaits</h1>
           
-          <p>Hi ${args.firstName || 'there'}!</p>
+          <p>Hi there!</p>
           
           <p>It's time for your weekly professional reflection. Take a few minutes to track your progress and celebrate your growth.</p>
           
@@ -459,43 +458,6 @@ export const sendWeeklyReminderEmail = internalAction({
     } catch (error) {
       console.error('Error sending weekly reminder email:', error)
       throw error
-    }
-  },
-})
-
-// Cron job: runs every 15 minutes
-export const weeklyReminderCron = internalMutation({
-  args: {},
-  handler: async ctx => {
-    // Get current UTC time rounded down to the nearest 15 minutes
-    const now = new Date()
-    const minute = now.getMinutes() - (now.getMinutes() % 15)
-    const windowStart = new Date(now)
-    windowStart.setMinutes(minute, 0, 0)
-    const windowEnd = new Date(windowStart.getTime() + 15 * 60 * 1000)
-
-    // Query users whose next_weekly_reminder_utc is within this window
-    const users = await ctx.db
-      .query('account_settings')
-      .withIndex('by_next_weekly_reminder_utc', (q: any) =>
-        q
-          .gte('next_weekly_reminder_utc', windowStart.getTime())
-          .lt('next_weekly_reminder_utc', windowEnd.getTime())
-      )
-      .collect()
-
-    for (const user of users) {
-      if (user.email_notifications_disabled) continue
-      // Send the reminder
-      await ctx.scheduler.runAfter(0, internal.resend.sendWeeklyReminderEmail, {
-        to: user.notifications_email || user.clerk_email,
-      })
-      // Update next_weekly_reminder_utc to next week
-      const nextUtc = addWeeks(
-        new Date(user.next_weekly_reminder_utc),
-        1
-      ).getTime()
-      await ctx.db.patch(user._id, { next_weekly_reminder_utc: nextUtc })
     }
   },
 })
